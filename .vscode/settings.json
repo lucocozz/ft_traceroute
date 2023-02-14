@@ -1,0 +1,6 @@
+{
+	"files.associations": {
+		".env": "plaintext",
+		"ft_traceroute.h": "c"
+	}
+}
