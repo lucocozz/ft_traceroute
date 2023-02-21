@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 19:58:25 by user42            #+#    #+#             */
-/*   Updated: 2023/01/09 15:31:14 by user42           ###   ########.fr       */
+/*   Updated: 2023/02/21 17:30:09 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,11 @@
 
 int	ft_strcmp(const char *s1, const char *s2)
 {
-	for (uint i = 0; (s1[i] != '\0' || s2[i] != '\0'); ++i)
-		if (s1[i] != s2[i])
-			return ((u_char)s1[i] - (u_char)s2[i]);
-	return (0);
+	uint i = 0;
+
+	while ((s1[i] != '\0' && s2[i] != '\0') && s1[i] == s2[i])
+		++i;
+	return ((u_char)s1[i] - (u_char)s2[i]);
 }
 
 uint	ft_strlen(const char *str)
@@ -27,6 +28,18 @@ uint	ft_strlen(const char *str)
 	while (str[i] != '\0')
 		i++;
 	return (i);
+}
+
+bool	ft_start_with(const char *start_with, const char *str)
+{
+	uint	i = 0;
+
+	while (start_with[i] != '\0' && str[i] != '\0') {
+		if (start_with[i] != str[i])
+			return (false);
+		++i;
+	}
+	return (start_with[i] == '\0' ? true : false);
 }
 
 static bool	ft_isspace(int c)
