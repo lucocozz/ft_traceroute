@@ -6,7 +6,7 @@
 #    By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/30 15:23:20 by lucocozz          #+#    #+#              #
-#    Updated: 2023/03/03 19:43:31 by lucocozz         ###   ########.fr        #
+#    Updated: 2023/03/03 20:40:55 by lucocozz         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ NAME = ft_traceroute
 SRCS =	main.c					\
 		$(_PROTOCOL)			\
 		$(_IP)					\
-		$(_OPTIONS)				\
+		$(_CLI)				\
 		$(_LIBS)				\
 		$(_SYSTEM)				\
 		# $(_UTILS)				\
@@ -45,11 +45,11 @@ _IP =						\
 	is_ip_format.c			\
 	resolve_service.c
 
-_OPTIONS =					\
+_CLI =					\
 	flags_handlers.c		\
-	get_options.c			\
-	parse_options.c			\
-	options_errors.c
+	get_cli.c			\
+	parse_cli.c			\
+	cli_errors.c
 
 _SYSTEM =					\
 	cleanup.c				\
@@ -82,7 +82,7 @@ ifeq ($(DEBUG), on)
 endif
 LDFLAGS = $(LIBS:%=-L lib%) $(LIBS:%=-l%)
 
-vpath %.c	$(addprefix $(SRCS_DIR), /. /libs /protocol /options /ip /system /utils /ping /display)
+vpath %.c	$(addprefix $(SRCS_DIR), /. /libs /protocol /cli /ip /system /utils /ping /display)
 
 all:
 	$(foreach LIB, ${LIBS}, ${MAKE} -C lib${LIB} ;)

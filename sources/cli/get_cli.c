@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_options.c                                      :+:      :+:    :+:   */
+/*   get_cli.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,16 +12,16 @@
 
 #include "ft_traceroute.h"
 
-t_options	get_options(int argc, char **argv)
+t_cli	get_cli(int argc, char **argv)
 {
-	t_options	options;
+	t_cli	cli;
 
 	if (argc == 1) {
 		handle_flag_help(NULL, NULL);
 		exit(EXIT_ERROR);
 	}
-	options = parse_options(argc, argv);
-	if (options.host == NULL)
+	cli = parse_cli(argc, argv);
+	if (cli.host == NULL)
 		fatal(EXIT_ERROR, "Specify \"host\" missing argument.");
-	return (options);
+	return (cli);
 }

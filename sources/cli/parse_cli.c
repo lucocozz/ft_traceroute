@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_options.c                                    :+:      :+:    :+:   */
+/*   parse_cli.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -23,7 +23,7 @@ char	*__get_argument(char *flag)
 	return (&flag[i + 1]);
 }
 
-bool	__exec_handler(const t_option_table *options, t_options *data, char *flag, char *argument, int argc)
+bool	__exec_handler(const t_option_table *options, t_cli *cli, char *flag, char *argument, int argc)
 {
 	uint	i = 0;
 
@@ -33,7 +33,7 @@ bool	__exec_handler(const t_option_table *options, t_options *data, char *flag, 
 		{
 			if (options[i].has_argument == true && argument == NULL)
 				missing_arg_error(options[i].flag, argc, options[i].help);
-			if (options[i].handler(data, argument) == -1)
+			if (options[i].handler(cli, argument) == -1)
 				arg_error(options[i].flag, argument, argc);
 			break ;
 		}
@@ -43,7 +43,7 @@ bool	__exec_handler(const t_option_table *options, t_options *data, char *flag, 
 	return (options[i].has_argument);
 }
 
-static int	__double_dash_flag(t_options *data, char *flag, int argc)
+static int	__double_dash_flag(t_cli *cli, char *flag, int argc)
 {
 	char						*argument = __get_argument(flag);
 	static const t_option_table	options[] = {
@@ -58,10 +58,10 @@ static int	__double_dash_flag(t_options *data, char *flag, int argc)
 		{NULL, false, NULL, NULL}
 	};
 	
-	return (__exec_handler(options, data, flag, argument, argc));
+	return (__exec_handler(options, cli, flag, argument, argc));
 }
 
-static int	__dash_flag(t_options *data, char *flag, char *argument, int argc)
+static int	__dash_flag(t_cli *cli, char *flag, char *argument, int argc)
 {
 	static const t_option_table	options[] = {
 		{.flag = "4", .handler = &handle_flag_4, .has_argument = false},
@@ -76,35 +76,35 @@ static int	__dash_flag(t_options *data, char *flag, char *argument, int argc)
 		{NULL, false, NULL, NULL}
 	};
 
-	return (__exec_handler(options, data, flag, argument, argc));
+	return (__exec_handler(options, cli, flag, argument, argc));
 }
 
-static t_options	__init_options(void)
+static t_cli	__init_cli(void)
 {
-	t_options	options;
+	t_cli	cli;
 
-	options.first_ttl = DFT_FIRST_TTL;
-	options.host = DFT_HOST;
-	options.interval = DFT_INTERVAL;
-	options.family = DFT_FAMILY;
-	options.max_ttl = DFT_MAX_TTL;
-	options.queries = DFT_QUERIES;
-	options.port = DFT_PORT;
-	options.socktype = DFT_SOCKTYPE;
-	options.packetlen = DFT_PACKETLEN;
-	return (options);
+	cli.first_ttl = DFT_FIRST_TTL;
+	cli.host = DFT_HOST;
+	cli.interval = DFT_INTERVAL;
+	cli.family = DFT_FAMILY;
+	cli.max_ttl = DFT_MAX_TTL;
+	cli.queries = DFT_QUERIES;
+	cli.port = DFT_PORT;
+	cli.socktype = DFT_SOCKTYPE;
+	cli.packetlen = DFT_PACKETLEN;
+	return (cli);
 }
 
-void	__handle_argument(t_options *options, char *arg, int i)
+void	__handle_argument(t_cli *cli, char *arg, int i)
 {
 	int	error;
 
-	if (options->host != NULL && options->packetlen != DFT_PACKETLEN)
+	if (cli->host != NULL && cli->packetlen != DFT_PACKETLEN)
 		extra_arg_error(arg, i);
-	if (options->host == NULL)
-		options->host = arg;
+	if (cli->host == NULL)
+		cli->host = arg;
 	else {
-		error = handle_packetlen(options, arg);
+		error = handle_packetlen(cli, arg);
 		if (error == -1)
 			dprintf(STDERR_FILENO, "Cannot handle \"packetlen\" cmdline arg `%s' on position %d (argc %d)\n", arg, i, i);
 		else if (error == -2)
@@ -114,37 +114,37 @@ void	__handle_argument(t_options *options, char *arg, int i)
 	}
 }
 
-int	__handle_flag(t_options *options, char **argv, int argc, int i)
+int	__handle_flag(t_cli *cli, char **argv, int argc, int i)
 {
 	char	*flag = &argv[i][1];
 
 	while (*flag != '\0')
 	{
 		if (*flag == '-')
-			i += __double_dash_flag(options, flag, i);
+			i += __double_dash_flag(cli, flag, i);
 		if (*(flag + 1) != '\0') {
-			__dash_flag(options, flag, (flag + 1), i);
+			__dash_flag(cli, flag, (flag + 1), i);
 			break ;
 		}
 		else if (i < argc - 1)
-			i += __dash_flag(options, flag, argv[i + 1], i);
+			i += __dash_flag(cli, flag, argv[i + 1], i);
 		else
-			__dash_flag(options, flag, NULL, i);
+			__dash_flag(cli, flag, NULL, i);
 		++flag;
 	}
 	return (i);
 }
 
-t_options	parse_options(int argc, char **argv)
+t_cli	parse_cli(int argc, char **argv)
 {
-	t_options	options = __init_options();
+	t_cli	cli = __init_cli();
 
 	for (int i = 1; i < argc; ++i)
 	{
 		if (argv[i][0] == '-' && argv[i][1] != '\0')
-			i = __handle_flag(&options, argv, argc, i);
+			i = __handle_flag(&cli, argv, argc, i);
 		else
-			__handle_argument(&options, argv[i], i);
+			__handle_argument(&cli, argv[i], i);
 	}
-	return (options);
+	return (cli);
 }

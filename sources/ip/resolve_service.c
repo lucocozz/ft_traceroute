@@ -12,17 +12,17 @@
 
 #include "ft_traceroute.h"
 
-struct addrinfo	*resolve_service(t_options options)
+struct addrinfo	*resolve_service(t_cli cli)
 {
 	struct addrinfo	hints = {0};
 	struct addrinfo	*result = {0};
 	char			msg[256] = {0};
 
-	hints.ai_family = options.family;
-	hints.ai_socktype = options.socktype;
-	hints.ai_protocol = (options.family == PF_INET ? IPPROTO_ICMP : IPPROTO_ICMPV6);
-	if (getaddrinfo(options.host, NULL, &hints, &result) < 0) {
-		sprintf(msg, "%s: Name or service not known", options.host);
+	hints.ai_family = cli.family;
+	hints.ai_socktype = cli.socktype;
+	hints.ai_protocol = (cli.family == PF_INET ? IPPROTO_ICMP : IPPROTO_ICMPV6);
+	if (getaddrinfo(cli.host, NULL, &hints, &result) < 0) {
+		sprintf(msg, "%s: Name or service not known", cli.host);
 		fatal(EXIT_FAILURE, msg);
 	}
 	return (result);

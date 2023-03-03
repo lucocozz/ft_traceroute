@@ -81,7 +81,7 @@
 "+    host\t\tThe Host to traceroute to\n"							\
 "     packetlen\t\tThe full packet lenght (default is the lenght of an IP\n\t\t\theader plus 40). Can be ignored or increased to a minimal\n\t\t\tallowed value\n"
 
-typedef struct s_options
+typedef struct s_cli
 {
 	char			*host;
 	int				interval;
@@ -92,14 +92,14 @@ typedef struct s_options
 	uint			port;
 	uint			socktype;
 	uint			packetlen;
-}	t_options;
+}	t_cli;
 
 typedef struct s_option_table
 {
 	char	*flag;
 	bool	has_argument;
 	char	*help;
-	int		(*handler)(t_options *, char *);
+	int		(*handler)(t_cli *, char *);
 }	t_option_table;
 
 typedef struct s_icmp_datagram
@@ -145,45 +145,45 @@ int				create_socket(struct addrinfo *address);
 t_icmp_datagram	create_icmp_datagram(size_t data_size, uint8_t type, uint8_t code);
 void			delete_icmp_datagram(t_icmp_datagram *datagram);
 int				send_datagram(int socket, t_icmp_datagram datagram, struct addrinfo *address);
-t_recv_data		recv_datagram(t_options options, int socket, int family);
+t_recv_data		recv_datagram(t_cli cli, int socket, int family);
 
 /* ip */
 char			*get_ip_address(struct addrinfo *address);
-struct addrinfo	*resolve_service(t_options options);
+struct addrinfo	*resolve_service(t_cli cli);
 uint16_t		checksum(uint16_t *addr, size_t len);
 bool			is_ip_format(int family, char *ip);
-int				is_ip_broadcast(t_options options, struct addrinfo *address);
+int				is_ip_broadcast(t_cli cli, struct addrinfo *address);
 char			*get_ip_netmask(char *ip_address);
 
 /* utils */
 float	get_elapsed_time(struct timeval start, struct timeval end);
 
 /* traceroute */
-int			traceroute(t_options options, struct addrinfo *address, int socket);
-t_recv_data	traceroute_datagram(t_options options, int socket, t_icmp_datagram datagram,
+int			traceroute(t_cli cli, struct addrinfo *address, int socket);
+t_recv_data	traceroute_datagram(t_cli cli, int socket, t_icmp_datagram datagram,
 				struct addrinfo *address);
 void		set_traceroute_stats(t_recv_data result);
 
 
-/* options */
-t_options	get_options(int argc, char **argv);
-t_options	parse_options(int argc, char **argv);
+/* cli */
+t_cli	get_cli(int argc, char **argv);
+t_cli	parse_cli(int argc, char **argv);
 
 void	missing_arg_error(char *flag, int argc, char *help);
 void	arg_error(char *flag, char *argument, int argc);
 void	bad_option(char *flag, int argc);
 void	packetlen_error(char *argument, int argc);
 void	extra_arg_error(char *argument, int argc);
-int		handle_packetlen(t_options *data, char *argument);
-int		handle_flag_help(t_options *data, char *argument);
-int		handle_flag_4(t_options *data, char *argument);
-int		handle_flag_6(t_options *data, char *argument);
-int		handle_flag_icmp(t_options *data, char *argument);
-int		handle_flag_tcp(t_options *data, char *argument);
-int		handle_flag_udp(t_options *data, char *argument);
-int		handle_flag_first(t_options *data, char *argument);
-int		handle_flag_max(t_options *data, char *argument);
-int		handle_flag_port(t_options *data, char *argument);
-int		handle_flag_queries(t_options *data, char *argument);
+int		handle_packetlen(t_cli *cli, char *argument);
+int		handle_flag_help(t_cli *cli, char *argument);
+int		handle_flag_4(t_cli *cli, char *argument);
+int		handle_flag_6(t_cli *cli, char *argument);
+int		handle_flag_icmp(t_cli *cli, char *argument);
+int		handle_flag_tcp(t_cli *cli, char *argument);
+int		handle_flag_udp(t_cli *cli, char *argument);
+int		handle_flag_first(t_cli *cli, char *argument);
+int		handle_flag_max(t_cli *cli, char *argument);
+int		handle_flag_port(t_cli *cli, char *argument);
+int		handle_flag_queries(t_cli *cli, char *argument);
 
 #endif

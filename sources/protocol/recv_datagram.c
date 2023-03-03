@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/25 11:07:12 by lucocozz          #+#    #+#             */
-/*   Updated: 2023/02/22 20:52:21 by lucocozz         ###   ########.fr       */
+/*   Updated: 2023/03/03 20:40:26 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ static short	__get_error(int bytes, void **buffer)
 	return (__get_error_type(buffer));
 }
 
-t_recv_data	recv_datagram(t_options options, int socket, int family)
+t_recv_data	recv_datagram(t_cli cli, int socket, int family)
 {
 	struct iovec		iov;
 	struct msghdr		msg;
@@ -87,7 +87,7 @@ t_recv_data	recv_datagram(t_options options, int socket, int family)
 		data.ttl = __get_ttl(msg, GET_LEVEL(family));
 	}
 	inet_ntop(family, &from_addr.sin_addr, data.from_addr, GET_ADDRLEN(family));
-	if (options.no_dns == false)
+	if (cli.no_dns == false)
 		getnameinfo((struct sockaddr*)&from_addr, sizeof(from_addr), data.ptr_record, PTR_RECORD_SIZE, NULL, 0, 0);
 	else
 		ft_strcpy(data.ptr_record, data.from_addr);
