@@ -6,11 +6,11 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/25 00:09:19 by lucocozz          #+#    #+#             */
-/*   Updated: 2022/12/29 14:54:06 by lucocozz         ###   ########.fr       */
+/*   Updated: 2023/02/22 20:52:29 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_ping.h"
+#include "ft_traceroute.h"
 
 int	send_datagram(int socket, t_icmp_datagram datagram, struct addrinfo *address)
 {

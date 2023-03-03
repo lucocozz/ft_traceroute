@@ -6,13 +6,13 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 21:30:35 by user42            #+#    #+#             */
-/*   Updated: 2023/02/21 18:33:31 by lucocozz         ###   ########.fr       */
+/*   Updated: 2023/03/03 20:37:57 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_traceroute.h"
 
-char	*__get_argument(const char *flag)
+char	*__get_argument(char *flag)
 {
 	uint	i = 0;
 
@@ -23,76 +23,60 @@ char	*__get_argument(const char *flag)
 	return (&flag[i + 1]);
 }
 
-static int	__check_double_dash_flag(t_options *data, char flag)
+bool	__exec_handler(const t_option_table *options, t_options *data, char *flag, char *argument, int argc)
 {
-	uint						i = 0;
-	char						*argument = __get_argument(flag);
-	static const t_option_table	options[] = {
-		{.flag = "help", .handler = &handle_flag_help, .has_argument = false},
-		{.flag = "icmp", .handler = &handle_flag_icmp, .has_argument = false},
-		{.flag = "tcp", .handler = &handle_flag_tcp, .has_argument = false},
-		{.flag = "udp", .handler = &handle_flag_udp, .has_argument = false},
-		{.flag = "first", .handler = &handle_flag_first, .has_argument = true},
-		{.flag = "max-hops", .handler = &handle_flag_max, .has_argument = true},
-		{.flag = "port", .handler = &handle_flag_port, .has_argument = true},
-		{.flag = "queries", .handler = &handle_flag_queries, .has_argument = true},
-		{NULL}
-	};
-
-	for (i = 0; options[i].flag != 0; ++i)
-	{
-		if (ft_start_with(options[i].flag, flag) == true)
-		{
-			if (options[i].has_argument == true && argument == NULL)
-			{
-				printf("%s'%c'\n\n", MSG_REQUIRED_ARG, flag);
-				handle_flag_help(NULL, NULL);
-			}
-			options[i].handler(data, options[i].has_argument == true ? argument : NULL);
-			break ;
-		}
-	}
-	if (options[i].flag == NULL) {
-		printf("%s'%c'\n\n", MSG_INVALID_OPT, flag);
-		handle_flag_help(NULL, NULL);
-	}
-	return (options[i].has_argument);
-}
-
-static int	__check_dash_flag(t_options *data, char flag, char *argument)
-{
-	uint						i = 0;
-	static const t_option_table	options[] = {
-		{.flag = "4", .handler = &handle_flag_4, .has_argument = false},
-		{.flag = "6", .handler = &handle_flag_6, .has_argument = false},
-		{.flag = "I", .handler = &handle_flag_icmp, .has_argument = false},
-		{.flag = "T", .handler = &handle_flag_tcp, .has_argument = false},
-		{.flag = "U", .handler = &handle_flag_udp, .has_argument = false},
-		{.flag = "f", .handler = &handle_flag_first, .has_argument = true},
-		{.flag = "m", .handler = &handle_flag_max, .has_argument = true},
-		{.flag = "p", .handler = &handle_flag_port, .has_argument = true},
-		{.flag = "q", .handler = &handle_flag_queries, .has_argument = true},
-		{NULL}
-	};
+	uint	i = 0;
 
 	for (i = 0; options[i].flag != NULL; ++i)
 	{
 		if (ft_start_with(options[i].flag, flag) == true)
 		{
 			if (options[i].has_argument == true && argument == NULL)
-			{
-				printf("%s'%c'\n\n", MSG_REQUIRED_ARG, flag);
-				handle_flag_help(NULL, NULL);
-			}
-			options[i].handler(data, options[i].has_argument == true ? argument : NULL);
+				missing_arg_error(options[i].flag, argc, options[i].help);
+			if (options[i].handler(data, argument) == -1)
+				arg_error(options[i].flag, argument, argc);
 			break ;
 		}
 	}
-	if (options[i].flag == NULL) {
-		printf("%s'%c'\n\n", MSG_INVALID_OPT, flag);
-		handle_flag_help(NULL, NULL);
-	}
+	if (options[i].flag == NULL)
+		bad_option(options[i].flag, argc);
 	return (options[i].has_argument);
+}
+
+static int	__double_dash_flag(t_options *data, char *flag, int argc)
+{
+	char						*argument = __get_argument(flag);
+	static const t_option_table	options[] = {
+		{.flag = "help", .handler = &handle_flag_help, .has_argument = false},
+		{.flag = "icmp", .handler = &handle_flag_icmp, .has_argument = false},
+		{.flag = "tcp", .handler = &handle_flag_tcp, .has_argument = false},
+		{.flag = "udp", .handler = &handle_flag_udp, .has_argument = false},
+		{.flag = "first", .handler = &handle_flag_first, .has_argument = true, .help = "--first=first_ttl"},
+		{.flag = "max-hops", .handler = &handle_flag_max, .has_argument = true, .help = "--max-hops=max_ttl"},
+		{.flag = "port", .handler = &handle_flag_port, .has_argument = true, .help = "--port=port"},
+		{.flag = "queries", .handler = &handle_flag_queries, .has_argument = true, .help = "--queries=nqueries"},
+		{NULL, false, NULL, NULL}
+	};
+	
+	return (__exec_handler(options, data, flag, argument, argc));
+}
+
+static int	__dash_flag(t_options *data, char *flag, char *argument, int argc)
+{
+	static const t_option_table	options[] = {
+		{.flag = "4", .handler = &handle_flag_4, .has_argument = false},
+		{.flag = "6", .handler = &handle_flag_6, .has_argument = false},
+		{.flag = "I", .handler = &handle_flag_icmp, .has_argument = false},
+		{.flag = "T", .handler = &handle_flag_tcp, .has_argument = false},
+		{.flag = "U", .handler = &handle_flag_udp, .has_argument = false},
+		{.flag = "f", .handler = &handle_flag_first, .has_argument = true, .help = "-f first_ttl"},
+		{.flag = "m", .handler = &handle_flag_max, .has_argument = true, .help = "-m max_ttl"},
+		{.flag = "p", .handler = &handle_flag_port, .has_argument = true, .help = "-p port"},
+		{.flag = "q", .handler = &handle_flag_queries, .has_argument = true, .help = "-q queries"},
+		{NULL, false, NULL, NULL}
+	};
+
+	return (__exec_handler(options, data, flag, argument, argc));
 }
 
 static t_options	__init_options(void)
@@ -111,33 +95,56 @@ static t_options	__init_options(void)
 	return (options);
 }
 
+void	__handle_argument(t_options *options, char *arg, int i)
+{
+	int	error;
+
+	if (options->host != NULL && options->packetlen != DFT_PACKETLEN)
+		extra_arg_error(arg, i);
+	if (options->host == NULL)
+		options->host = arg;
+	else {
+		error = handle_packetlen(options, arg);
+		if (error == -1)
+			dprintf(STDERR_FILENO, "Cannot handle \"packetlen\" cmdline arg `%s' on position %d (argc %d)\n", arg, i, i);
+		else if (error == -2)
+			dprintf(STDERR_FILENO, "Bad option `%s' (argc %d)\n", arg, i);
+		if (error < 0)
+			exit(EXIT_ERROR);
+	}
+}
+
+int	__handle_flag(t_options *options, char **argv, int argc, int i)
+{
+	char	*flag = &argv[i][1];
+
+	while (*flag != '\0')
+	{
+		if (*flag == '-')
+			i += __double_dash_flag(options, flag, i);
+		if (*(flag + 1) != '\0') {
+			__dash_flag(options, flag, (flag + 1), i);
+			break ;
+		}
+		else if (i < argc - 1)
+			i += __dash_flag(options, flag, argv[i + 1], i);
+		else
+			__dash_flag(options, flag, NULL, i);
+		++flag;
+	}
+	return (i);
+}
+
 t_options	parse_options(int argc, char **argv)
 {
-	char		*flag;
 	t_options	options = __init_options();
 
 	for (int i = 1; i < argc; ++i)
 	{
 		if (argv[i][0] == '-' && argv[i][1] != '\0')
-		{
-			flag = &argv[i][1];
-			while (*flag != '\0')
-			{
-				if (*flag == '-')
-					__check_double_dash_flag(&options, *flag);
-				if (*(flag + 1) != '\0') {
-					__check_dash_flag(&options, *flag, (flag + 1));
-					break ;
-				}
-				else if (i < argc - 1)
-					i += __check_dash_flag(&options, *flag, argv[i + 1]);
-				else
-					__check_dash_flag(&options, *flag, NULL);
-				++flag;
-			}
-		}
+			i = __handle_flag(&options, argv, argc, i);
 		else
-			options.host = argv[i];
+			__handle_argument(&options, argv[i], i);
 	}
 	return (options);
 }

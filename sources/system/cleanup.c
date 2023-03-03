@@ -1,27 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_options.c                                      :+:      :+:    :+:   */
+/*   cleanup.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/29 15:52:36 by lucocozz          #+#    #+#             */
-/*   Updated: 2023/02/26 20:09:15 by lucocozz         ###   ########.fr       */
+/*   Created: 2022/12/29 16:06:25 by lucocozz          #+#    #+#             */
+/*   Updated: 2023/02/26 20:12:55 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_traceroute.h"
 
-t_options	get_options(int argc, char **argv)
+void	cleanup(int socket, struct addrinfo *address)
 {
-	t_options	options;
-
-	if (argc == 1) {
-		handle_flag_help(NULL, NULL);
-		exit(EXIT_ERROR);
-	}
-	options = parse_options(argc, argv);
-	if (options.host == NULL)
-		fatal(EXIT_ERROR, "Specify \"host\" missing argument.");
-	return (options);
+	if (socket != -1)
+		close(socket);
+	if (address != NULL)
+		freeaddrinfo(address);
 }

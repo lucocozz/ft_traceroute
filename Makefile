@@ -6,21 +6,21 @@
 #    By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/30 15:23:20 by lucocozz          #+#    #+#              #
-#    Updated: 2023/02/14 18:29:38 by lucocozz         ###   ########.fr        #
+#    Updated: 2023/03/03 19:43:31 by lucocozz         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = ft_traceroute
 
 SRCS =	main.c					\
-		$(_PING)				\
-		$(_DISPLAY)				\
-		$(_ICMP)				\
+		$(_PROTOCOL)			\
 		$(_IP)					\
 		$(_OPTIONS)				\
+		$(_LIBS)				\
 		$(_SYSTEM)				\
-		$(_UTILS)				\
-		$(_LIBS)
+		# $(_UTILS)				\
+		# $(_PING)				\
+		# $(_DISPLAY)				\
 
 _PING =						\
 	ping.c					\
@@ -33,9 +33,9 @@ _DISPLAY = 					\
 	print_ping_stats.c		\
 	print_sigquit_stats.c
 
-_ICMP =						\
-	create_icmp_socket.c	\
-	icmp_datagram.c			\
+_PROTOCOL =					\
+	create_socket.c	\
+	# icmp_datagram.c			\
 	send_datagram.c			\
 	recv_datagram.c
 
@@ -43,20 +43,17 @@ _IP =						\
 	checksum.c				\
 	get_ip_address.c		\
 	is_ip_format.c			\
-	resolve_service.c		\
-	is_ip_broadcast.c		\
-	get_ip_netmask.c
+	resolve_service.c
 
 _OPTIONS =					\
 	flags_handlers.c		\
 	get_options.c			\
-	parse_options.c
+	parse_options.c			\
+	options_errors.c
 
 _SYSTEM =					\
-	alarm.c					\
 	cleanup.c				\
-	logs.c					\
-	signals.c
+	logs.c
 
 _UTILS =					\
 	get_elapsed_time.c
@@ -85,7 +82,7 @@ ifeq ($(DEBUG), on)
 endif
 LDFLAGS = $(LIBS:%=-L lib%) $(LIBS:%=-l%)
 
-vpath %.c	$(addprefix $(SRCS_DIR), /. /libs /icmp /options /ip /system /utils /ping /display)
+vpath %.c	$(addprefix $(SRCS_DIR), /. /libs /protocol /options /ip /system /utils /ping /display)
 
 all:
 	$(foreach LIB, ${LIBS}, ${MAKE} -C lib${LIB} ;)

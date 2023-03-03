@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   create_icmp_socket.c                               :+:      :+:    :+:   */
+/*   create_socket.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/24 12:33:49 by lucocozz          #+#    #+#             */
-/*   Updated: 2023/01/27 16:40:13 by user42           ###   ########.fr       */
+/*   Updated: 2023/02/27 17:26:26 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_ping.h"
+#include "ft_traceroute.h"
 
-static void __set_filter(int raw_socket)
+static void __set_filter(int sock)
 {
 	static int once;
 	static struct sock_filter insns[] = {
@@ -34,34 +34,17 @@ static void __set_filter(int raw_socket)
 	once = 1;
 	/* Patch bpflet for current identifier. */
 	insns[2] = (struct sock_filter)BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, HTONS(getpid()), 0, 1);
-	if (setsockopt(raw_socket, SOL_SOCKET, SO_ATTACH_FILTER, &filter, sizeof(filter)))
+	if (setsockopt(sock, SOL_SOCKET, SO_ATTACH_FILTER, &filter, sizeof(filter)))
 		warn("failed to install socket filter");
 }
 
-static int	__set_options(t_options options, int raw_socket, int level)
+int	create_socket(struct addrinfo *address)
 {
-	int enable = 1;
+	int		sock;
 
-	if (setsockopt(raw_socket, level, IP_TTL, &options.ttl, sizeof(options.ttl)) < 0)
+	sock = socket(address->ai_family, address->ai_socktype, address->ai_protocol);
+	if (sock == -1)
 		return (-1);
-	if (setsockopt(raw_socket, level, IP_RECVTTL, &enable, sizeof(enable)) < 0)
-		return (-1);
-	// if (setsockopt(raw_socket, level, IP_RECVERR, &enable, sizeof(enable)) < 0)
-		// return (-1);
-	if (setsockopt(raw_socket, SOL_SOCKET, SO_RCVTIMEO, &options.timeout, sizeof(options.timeout)) < 0)
-		return (-1);
-	__set_filter(raw_socket);
-	return (0);
-}
-
-int	create_icmp_socket(t_options options, struct addrinfo *address)
-{
-	int		raw_socket;
-
-	raw_socket = socket(address->ai_family, address->ai_socktype, address->ai_protocol);
-	if (raw_socket == -1)
-		return (-1);
-	if (__set_options(options, raw_socket, GET_LEVEL(address->ai_family)) == -1)
-		warn(strerror(errno));
-	return (raw_socket);
+	__set_filter(sock);
+	return (sock);
 }

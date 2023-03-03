@@ -1,27 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_options.c                                      :+:      :+:    :+:   */
+/*   logs.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/29 15:52:36 by lucocozz          #+#    #+#             */
-/*   Updated: 2023/02/26 20:09:15 by lucocozz         ###   ########.fr       */
+/*   Created: 2022/12/12 19:40:56 by user42            #+#    #+#             */
+/*   Updated: 2023/02/26 20:13:39 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_traceroute.h"
 
-t_options	get_options(int argc, char **argv)
+void	fatal(short status, const char *msg)
 {
-	t_options	options;
+	if (msg != NULL)
+		dprintf(STDERR_FILENO, "%s\n", msg);
+	exit(status);
+}
 
-	if (argc == 1) {
-		handle_flag_help(NULL, NULL);
-		exit(EXIT_ERROR);
-	}
-	options = parse_options(argc, argv);
-	if (options.host == NULL)
-		fatal(EXIT_ERROR, "Specify \"host\" missing argument.");
-	return (options);
+void	warn(const char *msg)
+{
+	if (msg != NULL)
+		dprintf(STDERR_FILENO, "WARNING: %s\n", msg);
 }

@@ -4,6 +4,7 @@
 		"ft_traceroute.h": "c",
 		"libft.h": "c",
 		"tcp.h": "c",
-		"cstdlib": "c"
+		"cstdlib": "c",
+		"vector": "cpp"
 	}
 }

@@ -56,7 +56,6 @@
 # define DFT_SOCKTYPE SOCK_RAW
 # define DFT_PACKETLEN 40
 
-
 # define NOERROR 0
 # define INTERRUPTED -2
 # define ERR_UNDEFINED -1
@@ -65,37 +64,22 @@
 # define ERR_NET_UNREACHABLE 3
 # define ERR_WRONG_ID 4
 
-
-# define MSG_NAME "ft_traceroute: "
-# define MSG_FATAL "Fatal error"
-# define MSG_MISSING_DEST "usage error: Destination address required"
-# define MSG_INVALID_OPT "ft_traceroute: invalid option -- "
-# define MSG_REQUIRED_ARG "ft_traceroute: option requires an argument -- "
-# define MSG_INVALID_ARG "invalid argument:"
-# define MSG_FLOOD "cannot flood; minimal interval allowed for user is 2ms"
-# define MSG_USAGE_ERR "usage error: Destination address required"
-# define MSG_BROADCAST "Do you want to traceroute broadcast? Then -b. If not, check your local firewall rules."
-# define MSG_WARN_BROADCAST "tracerouteing broadcast address"
-# define MSG_OPT_GARBAGE "ft_traceroute: option argument contains garbage"
-# define MSG_WARN_FATAL "ft_traceroute: this will become fatal error in the future"
-# define MSG_BAD_LINGER_TIME "ft_traceroute: bad linger time"
-
 # define TRACEROUTE_HELP											\
 "Usage\n"															\
 "  ft_traceroute [-46ITn] [ -f first_ttl ] [ -m max_ttl ] [ -N squeries ] [ -p port ] host [ packetlen ]\n\n"	\
 "Options:\n"														\
-"  -4		Use IPv4\n"													\
-"  -6		Use IPv6\n"													\
-"  -f first_ttl  --first=first_ttl\n\t\tStart from the first_ttl hop (instead from 1)\n"			\
-"  -I  --icmp	Use ICMP ECHO for tracerouting\n"						\
-"  -T  --tcp	Use TCP SYN for tracerouting (default port is 80)\n"	\
-"  -m max_ttl  --max-hops=max_ttl\n\t\tSet the max number of hops (max TTL to be reached). Default is 30\n" \
-"  -p port  --port=port\t\tSet the destination port to use. It is either initial udp port value for \"default\" method (incremented by each probe, default is 33434), or initial seq for \"icmp\" (incremented as well, default from 1), or some constant destination port for other methods (with default of 80 for \"tcp\", 53 for \"udp\", etc.)" \
-"  -q queries  --queries=nqueries\n\t\tSet the number of probes per each hop. Default is 3\n" \
-"  --help\t\tRead this help and exit\n" \
+"  -4\t\t\t\tUse IPv4\n"													\
+"  -6\t\t\t\tUse IPv6\n"													\
+"  -f first_ttl  --first=first_ttl\n\t\t\t\tStart from the first_ttl hop (instead from 1)\n"			\
+"  -I  --icmp\t\t\tUse ICMP ECHO for tracerouting\n"						\
+"  -T  --tcp\t\t\tUse TCP SYN for tracerouting (default port is 80)\n"	\
+"  -m max_ttl  --max-hops=max_ttl\n\t\t\t\tSet the max number of hops (max TTL to be\n\t\t\t\treached). Default is 30\n" \
+"  -p port  --port=port\t\tSet the destination port to use. It is either\n\t\t\t\tinitial udp port value for \"default\" method\n\t\t\t\t(incremented by each probe, default is 33434), or\n\t\t\t\tinitial seq for \"icmp\" (incremented as well,\n\t\t\t\tdefault from 1), or some constant destination\n\t\t\t\tport for other methods (with default of 80 for\n\t\t\t\t\"tcp\", 53 for \"udp\", etc.)\n" \
+"  -q queries  --queries=nqueries\n\t\t\t\tSet the number of probes per each hop. Default is\n\t\t\t\t3\n" \
+"  --help\t\t\tRead this help and exit\n" \
 "\nArguments:\n"													\
-"+    host 	The Host to traceroute to\n"							\
-"     packetlen 	The full packet lenght (default is the lenght of an IP header plus 40). Can be ignored or increased to a minimal allowed value"
+"+    host\t\tThe Host to traceroute to\n"							\
+"     packetlen\t\tThe full packet lenght (default is the lenght of an IP\n\t\t\theader plus 40). Can be ignored or increased to a minimal\n\t\t\tallowed value\n"
 
 typedef struct s_options
 {
@@ -114,7 +98,8 @@ typedef struct s_option_table
 {
 	char	*flag;
 	bool	has_argument;
-	void	(*handler)(t_options *, char *);
+	char	*help;
+	int		(*handler)(t_options *, char *);
 }	t_option_table;
 
 typedef struct s_icmp_datagram
@@ -150,26 +135,13 @@ typedef struct s_rtt_stats
 	float		ewma;
 }	t_rtt_stats;
 
-typedef struct s_traceroute
-{
-	bool		running;
-	t_rtt_stats	stats;
-}	t_traceroute;
-
-extern t_traceroute g_traceroute;
-
 /* system */
 void	warn(const char *msg);
 void	fatal(short status, const char *msg);
-void	verbose(int fd, bool is_active, const char *str);
-void	set_signals_handlers(void);
-void	handle_signals(int signum);
-void	set_signals_handlers(void);
-void	set_alarm(t_options options);
 void	cleanup(int socket, struct addrinfo *address);
 
 /* icmp */
-int				create_icmp_socket(t_options options, struct addrinfo *address);
+int				create_socket(struct addrinfo *address);
 t_icmp_datagram	create_icmp_datagram(size_t data_size, uint8_t type, uint8_t code);
 void			delete_icmp_datagram(t_icmp_datagram *datagram);
 int				send_datagram(int socket, t_icmp_datagram datagram, struct addrinfo *address);
@@ -177,7 +149,7 @@ t_recv_data		recv_datagram(t_options options, int socket, int family);
 
 /* ip */
 char			*get_ip_address(struct addrinfo *address);
-struct addrinfo	*resolve_service(const char *service, int family);
+struct addrinfo	*resolve_service(t_options options);
 uint16_t		checksum(uint16_t *addr, size_t len);
 bool			is_ip_format(int family, char *ip);
 int				is_ip_broadcast(t_options options, struct addrinfo *address);
@@ -192,25 +164,26 @@ t_recv_data	traceroute_datagram(t_options options, int socket, t_icmp_datagram d
 				struct addrinfo *address);
 void		set_traceroute_stats(t_recv_data result);
 
-/* display */
-void	print_traceroute_header(t_options options, char *ip, t_icmp_datagram datagram);
-void	print_traceroute_result(t_options options, t_recv_data data, int seq);
-void	print_traceroute_stats(t_options options);
-void	print_sigquit_stats(int signum);
 
 /* options */
 t_options	get_options(int argc, char **argv);
 t_options	parse_options(int argc, char **argv);
 
-void	handle_flag_help(t_options *data, char *argument);
-void	handle_flag_4(t_options *data, char *argument);
-void	handle_flag_6(t_options *data, char *argument);
-void	handle_flag_icmp(t_options *data, char *argument);
-void	handle_flag_tcp(t_options *data, char *argument);
-void	handle_flag_udp(t_options *data, char *argument);
-void	handle_flag_first(t_options *data, char *argument);
-void	handle_flag_max(t_options *data, char *argument);
-void	handle_flag_port(t_options *data, char *argument);
-void	handle_flag_queries(t_options *data, char *argument);
+void	missing_arg_error(char *flag, int argc, char *help);
+void	arg_error(char *flag, char *argument, int argc);
+void	bad_option(char *flag, int argc);
+void	packetlen_error(char *argument, int argc);
+void	extra_arg_error(char *argument, int argc);
+int		handle_packetlen(t_options *data, char *argument);
+int		handle_flag_help(t_options *data, char *argument);
+int		handle_flag_4(t_options *data, char *argument);
+int		handle_flag_6(t_options *data, char *argument);
+int		handle_flag_icmp(t_options *data, char *argument);
+int		handle_flag_tcp(t_options *data, char *argument);
+int		handle_flag_udp(t_options *data, char *argument);
+int		handle_flag_first(t_options *data, char *argument);
+int		handle_flag_max(t_options *data, char *argument);
+int		handle_flag_port(t_options *data, char *argument);
+int		handle_flag_queries(t_options *data, char *argument);
 
 #endif

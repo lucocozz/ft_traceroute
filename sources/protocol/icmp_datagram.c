@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_ping.h"
+#include "ft_traceroute.h"
 
 t_icmp_datagram	create_icmp_datagram(size_t data_size, uint8_t type, uint8_t code)
 {
