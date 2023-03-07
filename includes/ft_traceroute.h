@@ -43,6 +43,7 @@
 # define EXIT_ERROR 2
 # define MSG_BUFFER_SIZE 2048
 # define PTR_RECORD_SIZE 255
+# define MAX_ADDR_LEN 48
 
 # define DFT_INTERVAL 0
 # define DFT_FIRST_TTL 1
@@ -55,6 +56,7 @@
 # define DFT_HOST NULL
 # define DFT_SOCKTYPE SOCK_RAW
 # define DFT_PACKETLEN 40
+# define DFT_TIMEOUT 5
 
 # define NOERROR 0
 # define INTERRUPTED -2
@@ -63,6 +65,7 @@
 # define ERR_TIMEOUT 2
 # define ERR_NET_UNREACHABLE 3
 # define ERR_WRONG_ID 4
+# define ERR_SEND 5
 
 # define TRACEROUTE_HELP											\
 "Usage\n"															\
@@ -94,13 +97,13 @@ typedef struct s_cli
 	uint			packetlen;
 }	t_cli;
 
-typedef struct s_option_table
+typedef struct s_options
 {
 	char	*flag;
 	bool	has_argument;
 	char	*help;
 	int		(*handler)(t_cli *, char *);
-}	t_option_table;
+}	t_options;
 
 typedef struct s_icmp_datagram
 {
@@ -109,61 +112,48 @@ typedef struct s_icmp_datagram
 	char			*data;
 	size_t			size;
 	size_t			total;
-} t_icmp_datagram;
+} t_datagram;
 
-typedef struct s_recv_data
+typedef struct s_querie
 {
-	int		ttl;
 	int		bytes;
 	char	ptr_record[PTR_RECORD_SIZE];
-	char	from_addr[48];
+	char	address[MAX_ADDR_LEN];
 	float	time;
 	short	error;
-}	t_recv_data;
-
-typedef struct s_rtt_stats
-{
-	uint		transmitted;
-	uint		received;
-	uint		error;
-	__u_short	loss;
-	uint		time;
-	float		min;
-	float		max;
-	float		avg;
-	float		mdev;
-	float		ewma;
-}	t_rtt_stats;
+}	t_querie;
 
 /* system */
 void	warn(const char *msg);
 void	fatal(short status, const char *msg);
 void	cleanup(int socket, struct addrinfo *address);
+void	set_signals_handlers(void);
 
 /* icmp */
 int				create_socket(struct addrinfo *address);
-t_icmp_datagram	create_icmp_datagram(size_t data_size, uint8_t type, uint8_t code);
-void			delete_icmp_datagram(t_icmp_datagram *datagram);
-int				send_datagram(int socket, t_icmp_datagram datagram, struct addrinfo *address);
-t_recv_data		recv_datagram(t_cli cli, int socket, int family);
+t_datagram	create_icmp_datagram(size_t data_size, uint8_t type, uint8_t code);
+void			delete_icmp_datagram(t_datagram *datagram);
+int				send_datagram(int socket, t_datagram datagram, struct addrinfo *address);
+t_querie		recv_datagram(int socket, int family);
 
 /* ip */
 char			*get_ip_address(struct addrinfo *address);
 struct addrinfo	*resolve_service(t_cli cli);
 uint16_t		checksum(uint16_t *addr, size_t len);
 bool			is_ip_format(int family, char *ip);
-int				is_ip_broadcast(t_cli cli, struct addrinfo *address);
-char			*get_ip_netmask(char *ip_address);
+void			get_ptr_record(struct sockaddr *from_addr, char *buffer);
+int				set_ttl(int socket, int level, short ttl);
 
 /* utils */
 float	get_elapsed_time(struct timeval start, struct timeval end);
 
 /* traceroute */
 int			traceroute(t_cli cli, struct addrinfo *address, int socket);
-t_recv_data	traceroute_datagram(t_cli cli, int socket, t_icmp_datagram datagram,
-				struct addrinfo *address);
-void		set_traceroute_stats(t_recv_data result);
+t_querie	traceroute_queries(int socket, t_datagram datagram, struct addrinfo *address);
 
+/* display */
+void	print_header(t_cli cli, char *ip, t_datagram datagram);
+void	print_querie(t_querie querie);
 
 /* cli */
 t_cli	get_cli(int argc, char **argv);

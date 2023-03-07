@@ -12,9 +12,9 @@
 
 #include "ft_traceroute.h"
 
-t_icmp_datagram	create_icmp_datagram(size_t data_size, uint8_t type, uint8_t code)
+t_datagram	create_icmp_datagram(size_t data_size, uint8_t type, uint8_t code)
 {
-	t_icmp_datagram	datagram;
+	t_datagram	datagram;
 
 	datagram.raw = malloc(sizeof(struct icmphdr) + data_size);
 	if (datagram.raw == NULL)
@@ -31,7 +31,7 @@ t_icmp_datagram	create_icmp_datagram(size_t data_size, uint8_t type, uint8_t cod
 	return (datagram);
 }
 
-void	delete_icmp_datagram(t_icmp_datagram *datagram)
+void	delete_icmp_datagram(t_datagram *datagram)
 {
 	free(datagram->raw);
 	datagram->raw = NULL;

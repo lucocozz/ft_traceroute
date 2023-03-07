@@ -6,36 +6,33 @@
 #    By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/30 15:23:20 by lucocozz          #+#    #+#              #
-#    Updated: 2023/03/03 20:40:55 by lucocozz         ###   ########.fr        #
+#    Updated: 2023/03/07 19:39:34 by lucocozz         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = ft_traceroute
 
-SRCS =	main.c					\
-		$(_PROTOCOL)			\
-		$(_IP)					\
+SRCS =	main.c				\
+		$(_PROTOCOL)		\
+		$(_IP)				\
 		$(_CLI)				\
-		$(_LIBS)				\
-		$(_SYSTEM)				\
-		# $(_UTILS)				\
-		# $(_PING)				\
-		# $(_DISPLAY)				\
+		$(_LIBS)			\
+		$(_SYSTEM)			\
+		$(_TRACEROUTE)		\
+		$(_DISPLAY)			\
+		$(_UTILS)
 
-_PING =						\
-	ping.c					\
-	ping_datagram.c			\
-	set_ping_stats.c
+_TRACEROUTE =				\
+	traceroute.c			\
+	traceroute_queries.c
 
 _DISPLAY = 					\
-	print_ping_header.c		\
-	print_ping_result.c		\
-	print_ping_stats.c		\
-	print_sigquit_stats.c
+	print_header.c			\
+	print_querie.c			\
 
 _PROTOCOL =					\
-	create_socket.c	\
-	# icmp_datagram.c			\
+	create_socket.c			\
+	icmp_datagram.c			\
 	send_datagram.c			\
 	recv_datagram.c
 
@@ -43,17 +40,20 @@ _IP =						\
 	checksum.c				\
 	get_ip_address.c		\
 	is_ip_format.c			\
-	resolve_service.c
+	resolve_service.c		\
+	get_ptr_record.c		\
+	set_ttl.c
 
-_CLI =					\
+_CLI =						\
 	flags_handlers.c		\
-	get_cli.c			\
-	parse_cli.c			\
+	get_cli.c				\
+	parse_cli.c				\
 	cli_errors.c
 
 _SYSTEM =					\
 	cleanup.c				\
-	logs.c
+	logs.c					\
+	signals.c
 
 _UTILS =					\
 	get_elapsed_time.c
@@ -82,7 +82,7 @@ ifeq ($(DEBUG), on)
 endif
 LDFLAGS = $(LIBS:%=-L lib%) $(LIBS:%=-l%)
 
-vpath %.c	$(addprefix $(SRCS_DIR), /. /libs /protocol /cli /ip /system /utils /ping /display)
+vpath %.c	$(addprefix $(SRCS_DIR), /. /libs /protocol /cli /ip /system /utils /traceroute /display)
 
 all:
 	$(foreach LIB, ${LIBS}, ${MAKE} -C lib${LIB} ;)

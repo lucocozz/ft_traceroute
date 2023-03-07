@@ -23,7 +23,7 @@ char	*__get_argument(char *flag)
 	return (&flag[i + 1]);
 }
 
-bool	__exec_handler(const t_option_table *options, t_cli *cli, char *flag, char *argument, int argc)
+bool	__exec_handler(const t_options *options, t_cli *cli, char *flag, char *argument, int argc)
 {
 	uint	i = 0;
 
@@ -46,7 +46,7 @@ bool	__exec_handler(const t_option_table *options, t_cli *cli, char *flag, char 
 static int	__double_dash_flag(t_cli *cli, char *flag, int argc)
 {
 	char						*argument = __get_argument(flag);
-	static const t_option_table	options[] = {
+	static const t_options	options[] = {
 		{.flag = "help", .handler = &handle_flag_help, .has_argument = false},
 		{.flag = "icmp", .handler = &handle_flag_icmp, .has_argument = false},
 		{.flag = "tcp", .handler = &handle_flag_tcp, .has_argument = false},
@@ -63,7 +63,7 @@ static int	__double_dash_flag(t_cli *cli, char *flag, int argc)
 
 static int	__dash_flag(t_cli *cli, char *flag, char *argument, int argc)
 {
-	static const t_option_table	options[] = {
+	static const t_options	options[] = {
 		{.flag = "4", .handler = &handle_flag_4, .has_argument = false},
 		{.flag = "6", .handler = &handle_flag_6, .has_argument = false},
 		{.flag = "I", .handler = &handle_flag_icmp, .has_argument = false},

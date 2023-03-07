@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/24 12:33:49 by lucocozz          #+#    #+#             */
-/*   Updated: 2023/02/27 17:26:26 by lucocozz         ###   ########.fr       */
+/*   Updated: 2023/03/07 20:18:32 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 static void __set_filter(int sock)
 {
-	static int once;
-	static struct sock_filter insns[] = {
+	static int					once;
+	static struct sock_filter	insns[] = {
 		BPF_STMT(BPF_LDX | BPF_B   | BPF_MSH, 0),	/* Skip IP header due BSD, see ping6. */
 		BPF_STMT(BPF_LD  | BPF_H   | BPF_IND, 4),	/* Load icmp echo ident */
 		BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, 0xAAAA, 0, 1), /* Ours? */
@@ -38,6 +38,14 @@ static void __set_filter(int sock)
 		warn("failed to install socket filter");
 }
 
+static int	__set_options(int socket)
+{
+	struct timeval	timeout = {.tv_sec = DFT_TIMEOUT, .tv_usec = 0};
+	if (setsockopt(socket, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) < 0)
+		return (-1);
+	return (0);
+}
+
 int	create_socket(struct addrinfo *address)
 {
 	int		sock;
@@ -45,6 +53,9 @@ int	create_socket(struct addrinfo *address)
 	sock = socket(address->ai_family, address->ai_socktype, address->ai_protocol);
 	if (sock == -1)
 		return (-1);
-	__set_filter(sock);
+	if (address->ai_socktype == SOCK_RAW)
+		__set_filter(sock);
+	if (__set_options(sock) == -1)
+		return (-1);
 	return (sock);
 }

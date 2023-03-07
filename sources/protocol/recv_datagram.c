@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/25 11:07:12 by lucocozz          #+#    #+#             */
-/*   Updated: 2023/03/03 20:40:26 by lucocozz         ###   ########.fr       */
+/*   Updated: 2023/03/07 19:20:40 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,38 +26,7 @@ struct msghdr	__init_msg(struct sockaddr_in *src_addr, struct iovec *iov)
 	return (msg);
 }
 
-static int	__get_ttl(struct msghdr header, int level)
-{
-	int					ttl = -1;
-	struct cmsghdr		*ctrl_msg;
-
-	ctrl_msg = CMSG_FIRSTHDR(&header);
-	while (ctrl_msg != NULL)
-	{
-		if (ctrl_msg->cmsg_level == level && ctrl_msg->cmsg_type == IP_TTL)
-		{
-			ttl = *((int *)CMSG_DATA(ctrl_msg));
-			break ;
-		}
-		CMSG_NXTHDR(&header, ctrl_msg);
-	}
-	return (ttl);
-}
-
-static int	__get_error_type(void **buffer)
-{
-	struct icmphdr *icmp_header = (struct icmphdr *)(*buffer + sizeof(struct iphdr));
-
-	if (icmp_header->type == ICMP_ECHOREPLY && icmp_header->un.echo.id != getpid())
-		return (ERR_WRONG_ID);
-	if (icmp_header->type == ICMP_TIME_EXCEEDED && icmp_header->code == 0)
-		return (ERR_TTL_EXCEEPTED);
-	if (icmp_header->type == ICMP_DEST_UNREACH && icmp_header->code == 0)
-		return (ERR_NET_UNREACHABLE);
-	return (NOERROR);
-}
-
-static short	__get_error(int bytes, void **buffer)
+static short	__get_error(int bytes)
 {
 	if (bytes == -1)
 	{
@@ -67,29 +36,25 @@ static short	__get_error(int bytes, void **buffer)
 			return (ERR_TIMEOUT);
 		return (ERR_UNDEFINED);
 	}
-	return (__get_error_type(buffer));
+	return (NOERROR);
 }
 
-t_recv_data	recv_datagram(t_cli cli, int socket, int family)
+t_querie	recv_datagram(int socket, int family)
 {
 	struct iovec		iov;
 	struct msghdr		msg;
 	struct sockaddr_in	from_addr;
 	char				buffer[MSG_BUFFER_SIZE];
-	t_recv_data			data;
+	t_querie			data;
 
 	iov.iov_base = buffer;
 	iov.iov_len = MSG_BUFFER_SIZE;
 	msg = __init_msg(&from_addr, &iov);
 	data.bytes = recvmsg(socket, &msg, 0);
-	data.error = __get_error(data.bytes, &msg.msg_iov->iov_base);
+	data.error = __get_error(data.bytes);
 	if (data.error == NOERROR) {
-		data.ttl = __get_ttl(msg, GET_LEVEL(family));
+		inet_ntop(family, &from_addr.sin_addr, data.address, GET_ADDRLEN(family));
+		get_ptr_record((struct sockaddr *)&from_addr, data.ptr_record);
 	}
-	inet_ntop(family, &from_addr.sin_addr, data.from_addr, GET_ADDRLEN(family));
-	if (cli.no_dns == false)
-		getnameinfo((struct sockaddr*)&from_addr, sizeof(from_addr), data.ptr_record, PTR_RECORD_SIZE, NULL, 0, 0);
-	else
-		ft_strcpy(data.ptr_record, data.from_addr);
 	return (data);
 }

@@ -1,25 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   send_datagram.c                                    :+:      :+:    :+:   */
+/*   traceroute_queries.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/25 00:09:19 by lucocozz          #+#    #+#             */
+/*   Created: 2023/03/07 10:48:26 by lucocozz          #+#    #+#             */
 /*   Updated: 2023/03/07 20:32:38 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_traceroute.h"
 
-int	send_datagram(int socket, t_datagram datagram, struct addrinfo *address)
+t_querie	traceroute_queries(int socket, t_datagram datagram, struct addrinfo *address)
 {
-	struct sockaddr_in	dest;
-	struct sockaddr_in	*sockaddr = (struct sockaddr_in *)address->ai_addr;
-	int					bytes_sent;
+	t_querie		querie;
+	struct timeval	start, end;
 
-	dest.sin_family = address->ai_family;
-	dest.sin_addr = sockaddr->sin_addr;
-	bytes_sent = sendto(socket, datagram.raw, datagram.total, 0, (struct sockaddr *)&dest, sizeof(dest));
-	return (bytes_sent);
+	if (gettimeofday(&start, NULL) < 0)
+		return ((t_querie){.error = ERR_UNDEFINED});
+	if (send_datagram(socket, datagram, address) == -1)
+		return ((t_querie){.error = ERR_SEND});
+	querie = recv_datagram(socket, address->ai_family);
+	if (gettimeofday(&end, NULL) < 0)
+		return ((t_querie){.error = ERR_UNDEFINED});
+	querie.time = get_elapsed_time(start, end);
+	return (querie);
 }

@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 19:39:11 by user42            #+#    #+#             */
-/*   Updated: 2023/03/03 20:40:04 by lucocozz         ###   ########.fr       */
+/*   Updated: 2023/03/07 19:04:40 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 int main(int argc, char **argv)
 {
 	int				socket;
-	// int				result;
-	t_cli		cli;
+	int				result;
+	t_cli			cli;
 	struct addrinfo	*address;
 
 	cli = get_cli(argc, argv);
@@ -26,9 +26,10 @@ int main(int argc, char **argv)
 		cleanup(-1, address);
 		fatal(EXIT_FAILURE, strerror(errno));
 	}
-	// result = traceroute(cli, address, socket);
-	// cleanup(socket, address);
-	// if (result == ERR_UNDEFINED)
-	// 	fatal(EXIT_FAILURE, strerror(errno));
+	set_signals_handlers();
+	result = traceroute(cli, address, socket);
+	cleanup(socket, address);
+	if (result == ERR_UNDEFINED)
+		fatal(EXIT_FAILURE, strerror(errno));
 	return (EXIT_SUCCESS);
 }
