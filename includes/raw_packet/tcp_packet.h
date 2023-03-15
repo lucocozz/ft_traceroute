@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 15:35:16 by lucocozz          #+#    #+#             */
-/*   Updated: 2023/03/15 15:40:57 by lucocozz         ###   ########.fr       */
+/*   Updated: 2023/03/15 15:56:24 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include "raw_packet.h"
 
 typedef struct TcpPacket {
-	Packet			*base;
+	Packet			base;
 	struct tcphdr	*header;
 
 	void	(*set_ports)(Packet *packet, uint16_t source, uint16_t dest);

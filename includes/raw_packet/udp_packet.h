@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 15:35:16 by lucocozz          #+#    #+#             */
-/*   Updated: 2023/03/15 15:39:14 by lucocozz         ###   ########.fr       */
+/*   Updated: 2023/03/15 15:56:28 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include "raw_packet.h"
 
 typedef struct UdpPacket {
-	Packet			*base;
+	Packet			base;
 	struct udphdr	*header;
 
 	void	(*set_uh_ulen)(Packet *packet, size_t size);

@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/06 21:03:23 by lucocozz          #+#    #+#             */
-/*   Updated: 2023/03/15 15:43:09 by lucocozz         ###   ########.fr       */
+/*   Updated: 2023/03/15 15:54:24 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	traceroute(t_cli cli, struct addrinfo *address, int socket)
 	t_querie	querie = {0};
 	Packet		*packet;
 
-	packet = packet_create(cli.prototype, cli.packetlen);
+	packet = packet_create(cli.protocol, cli.packetlen);
 	if (packet == NULL)
 		return (ERR_UNDEFINED);
 	set_packet_header(packet, cli);

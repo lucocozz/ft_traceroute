@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 15:43:50 by lucocozz          #+#    #+#             */
-/*   Updated: 2023/03/15 15:43:47 by lucocozz         ###   ########.fr       */
+/*   Updated: 2023/03/15 15:56:55 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,22 +53,22 @@ Packet	*udp_packet_create(size_t size)
 	if (packet == NULL)
 		return (NULL);
     __memcpy(&packet->base, &base, sizeof(Packet));
-	packet->base->size = __set_sizes(size);
+	packet->base.size = __set_sizes(size);
 
     /* UdpPacket specific members */
 	packet->set_uh_ulen = ___set_udp_uh_ulen;
 	packet->set_ports = ___set_udp_ports;
 	packet->set_uh_dport = ___set_udp_uh_dport;
 
-	packet->base->raw = malloc(sizeof(struct udphdr) + size);
-	if (packet->base->raw == NULL) {
+	packet->base.raw = malloc(sizeof(struct udphdr) + size);
+	if (packet->base.raw == NULL) {
 		free(packet);
 		return (NULL);
 	}
-	__bzero(packet->base->raw, sizeof(struct udphdr) + size);
+	__bzero(packet->base.raw, sizeof(struct udphdr) + size);
 
-	packet->header = packet->base->raw;
-	packet->base->payload = packet->base->raw + sizeof(struct udphdr);
+	packet->header = packet->base.raw;
+	packet->base.payload = packet->base.raw + sizeof(struct udphdr);
 
     return ((Packet*)(&packet->base));
 }

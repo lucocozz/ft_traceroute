@@ -20,7 +20,7 @@ struct addrinfo	*resolve_service(t_cli cli)
 
 	hints.ai_family = cli.family;
 	hints.ai_socktype = cli.socktype;
-	hints.ai_protocol = (cli.family == PF_INET ? IPPROTO_ICMP : IPPROTO_ICMPV6);
+	hints.ai_protocol = cli.protocol;
 	if (getaddrinfo(cli.host, NULL, &hints, &result) < 0) {
 		sprintf(msg, "%s: Name or service not known", cli.host);
 		fatal(EXIT_FAILURE, msg);

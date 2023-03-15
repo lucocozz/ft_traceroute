@@ -58,7 +58,7 @@ https://man7.org/linux/man-pages/man7/feature_test_macros.7.html
 # define DFT_PORT DFT_UDP_PORT
 # define DFT_HOST NULL
 # define DFT_SOCKTYPE SOCK_DGRAM
-# define DFT_PROTOTYPE IPPROTO_UDP
+# define DFT_PROTOCOL IPPROTO_UDP
 # define DFT_PACKETLEN 40
 # define DFT_TIMEOUT 5
 
@@ -98,7 +98,7 @@ typedef struct s_cli
 	short			queries;
 	uint			port;
 	uint			socktype;
-	uint			prototype;
+	uint			protocol;
 	uint			packetlen;
 }	t_cli;
 

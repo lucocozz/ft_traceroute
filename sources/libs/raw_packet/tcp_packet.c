@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 15:43:50 by lucocozz          #+#    #+#             */
-/*   Updated: 2023/03/15 15:44:04 by lucocozz         ###   ########.fr       */
+/*   Updated: 2023/03/15 15:57:08 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ Packet	*tcp_packet_create(size_t size)
 	if (packet == NULL)
 		return (NULL);
     __memcpy(&packet->base, &base, sizeof(Packet));
-	packet->base->size = __set_sizes(size);
+	packet->base.size = __set_sizes(size);
 
     /* TcpPacket specific members */
 	packet->set_ports = ___set_tcp_ports;
@@ -58,15 +58,15 @@ Packet	*tcp_packet_create(size_t size)
 	packet->set_seq = ___set_tcp_seq;
 	packet->set_th_dport = ___set_tcp_th_dport;
 
-	packet->base->raw = malloc(sizeof(struct tcphdr) + size);
-	if (packet->base->raw == NULL) {
+	packet->base.raw = malloc(sizeof(struct tcphdr) + size);
+	if (packet->base.raw == NULL) {
 		free(packet);
 		return (NULL);
 	}
-	__bzero(packet->base->raw, sizeof(struct tcphdr) + size);
+	__bzero(packet->base.raw, sizeof(struct tcphdr) + size);
 
-	packet->header = packet->base->raw;
-	packet->base->payload = packet->base->raw + sizeof(struct tcphdr);
+	packet->header = packet->base.raw;
+	packet->base.payload = packet->base.raw + sizeof(struct tcphdr);
 
     return ((Packet*)(&packet->base));
 }
