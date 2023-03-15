@@ -19,7 +19,7 @@ struct addrinfo	*resolve_service(t_cli cli)
 	char			msg[256] = {0};
 
 	hints.ai_family = cli.family;
-	hints.ai_socktype = cli.socktype;
+	hints.ai_socktype = SOCK_RAW;
 	hints.ai_protocol = cli.protocol;
 	if (getaddrinfo(cli.host, NULL, &hints, &result) < 0) {
 		sprintf(msg, "%s: Name or service not known", cli.host);

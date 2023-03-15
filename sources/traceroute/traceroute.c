@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/06 21:03:23 by lucocozz          #+#    #+#             */
-/*   Updated: 2023/03/15 15:54:24 by lucocozz         ###   ########.fr       */
+/*   Updated: 2023/03/15 16:08:58 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,8 @@ int	traceroute(t_cli cli, struct addrinfo *address, int socket)
 	print_header(cli, ip, packet);
 	for (short hop = 1; ft_strcmp(querie.address, ip) != 0 && hop <= cli.max_ttl; ++hop)
 	{
-		update_packet_header(packet, cli, hop);
+		update_packet_header(packet, cli, socket, hop);
 		printf("%d:", hop);
-		set_ttl(socket, GET_LEVEL(cli.family), hop);
 		for (short i = 0; i < cli.queries; ++i) {
 			querie = traceroute_queries(socket, packet, address);
 			//TODO: SIGINT don't quit clearly

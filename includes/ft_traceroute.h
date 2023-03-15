@@ -130,7 +130,7 @@ int			create_socket(struct addrinfo *address);
 int			send_packet(int socket, Packet *packet, struct addrinfo *address);
 t_querie	recv_packet(int socket, int family);
 void		set_packet_header(Packet *packet, t_cli cli);
-void		update_packet_header(Packet *packet, t_cli cli, int seq);
+void		update_packet_header(Packet *packet, t_cli cli, int socket, int seq);
 
 /* ip */
 char			*get_ip_address(struct addrinfo *address);

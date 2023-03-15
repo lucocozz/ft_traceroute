@@ -6,13 +6,13 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 15:32:48 by lucocozz          #+#    #+#             */
-/*   Updated: 2023/03/15 15:46:36 by lucocozz         ###   ########.fr       */
+/*   Updated: 2023/03/16 00:33:12 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_traceroute.h"
 
-void	update_packet_header(Packet *packet, t_cli cli, int seq)
+void	update_packet_header(Packet *packet, t_cli cli, int socket, int seq)
 {
 	switch (packet->type)
 	{
@@ -27,4 +27,5 @@ void	update_packet_header(Packet *packet, t_cli cli, int seq)
 	default:
 		break;
 	}
+	set_ttl(socket, GET_LEVEL(cli.family), seq);
 }
