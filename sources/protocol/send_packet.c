@@ -1,19 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   print_header.c                                     :+:      :+:    :+:   */
+/*   send_packet.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/29 16:45:07 by lucocozz          #+#    #+#             */
-/*   Updated: 2023/03/14 19:58:21 by lucocozz         ###   ########.fr       */
+/*   Created: 2022/12/25 00:09:19 by lucocozz          #+#    #+#             */
+/*   Updated: 2023/03/15 15:25:03 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_traceroute.h"
 
-void	print_header(t_cli cli, char *ip, Packet *packet)
+int	send_packet(int socket, Packet *packet, struct addrinfo *address)
 {
-	printf("ft_traceroute to %s (%s), %d hops max, %lu byte packets\n", cli.host, ip,
-		cli.max_ttl, packet->size.payload + sizeof(struct iphdr));
+	struct sockaddr_in	dest = {0};
+	struct sockaddr_in	*sockaddr = (struct sockaddr_in *)address->ai_addr;
+	int					bytes_sent;
+
+	dest.sin_family = address->ai_family;
+	dest.sin_addr = sockaddr->sin_addr;
+	bytes_sent = sendto(socket, packet->raw, packet->size.total, 0, (struct sockaddr *)&dest, sizeof(dest));
+	return (bytes_sent);
 }

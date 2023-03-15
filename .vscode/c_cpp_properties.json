@@ -3,15 +3,23 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**",
-                "${workspaceFolder}/includes"
+                "${workspaceFolder}/includes",
+                "${workspaceFolder}/includes/raw_packet"
             ],
-            "defines": [],
+            "defines": [
+                "_GNU_SOURCE",
+                "__USE_MISC"
+            ],
             "compilerPath": "/usr/bin/clang",
-            "cStandard": "c17",
             "cppStandard": "c++14",
-            "intelliSenseMode": "linux-clang-x64",
-            "configurationProvider": "ms-vscode.makefile-tools"
+            "cStandard": "c99",
+            "intelliSenseMode": "clang-x64",
+            "configurationProvider": "ms-vscode.makefile-tools",
+            "compilerArgs": [
+                "-Werror",
+                "-Wall",
+                "-Wextra"
+            ]
         }
     ],
     "version": 4

@@ -91,6 +91,7 @@ static t_cli	__init_cli(void)
 	cli.queries = DFT_QUERIES;
 	cli.port = DFT_PORT;
 	cli.socktype = DFT_SOCKTYPE;
+	cli.prototype = DFT_PROTOTYPE;
 	cli.packetlen = DFT_PACKETLEN;
 	return (cli);
 }

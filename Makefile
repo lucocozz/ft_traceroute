@@ -6,7 +6,7 @@
 #    By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/30 15:23:20 by lucocozz          #+#    #+#              #
-#    Updated: 2023/03/07 19:39:34 by lucocozz         ###   ########.fr        #
+#    Updated: 2023/03/15 15:33:57 by lucocozz         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,12 +32,12 @@ _DISPLAY = 					\
 
 _PROTOCOL =					\
 	create_socket.c			\
-	icmp_datagram.c			\
-	send_datagram.c			\
-	recv_datagram.c
+	send_packet.c			\
+	recv_packet.c			\
+	set_packet_header.c		\
+	update_packet_header.c
 
 _IP =						\
-	checksum.c				\
 	get_ip_address.c		\
 	is_ip_format.c			\
 	resolve_service.c		\
@@ -58,14 +58,23 @@ _SYSTEM =					\
 _UTILS =					\
 	get_elapsed_time.c
 
-_LIBS = libft.c
+_LIBS =						\
+	$(_RAW_PACKET)			\
+	libft.c
+
+_RAW_PACKET =				\
+	raw_packet.c			\
+	icmp_packet.c			\
+	udp_packet.c			\
+	tcp_packet.c			\
+	checksum.c
 
 OBJS = $(SRCS:%.c=$(OBJS_DIR)/%.o)
 DEPENDENCIES = $(OBJS:%.o=%.d)
 
 SRCS_DIR = sources
 OBJS_DIR = .objs
-INCLUDES_DIR = includes $(LIBS:%=lib%/includes) $(LIBS:%=lib%)
+INCLUDES_DIR = includes includes/raw_packet $(LIBS:%=lib%/includes) $(LIBS:%=lib%)
 
 LIBS =
 
@@ -82,7 +91,7 @@ ifeq ($(DEBUG), on)
 endif
 LDFLAGS = $(LIBS:%=-L lib%) $(LIBS:%=-l%)
 
-vpath %.c	$(addprefix $(SRCS_DIR), /. /libs /protocol /cli /ip /system /utils /traceroute /display)
+vpath %.c	$(addprefix $(SRCS_DIR), /. $(addprefix /libs, /. /raw_packet) /protocol /cli /ip /system /utils /traceroute /display)
 
 all:
 	$(foreach LIB, ${LIBS}, ${MAKE} -C lib${LIB} ;)

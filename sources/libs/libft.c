@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 19:58:25 by user42            #+#    #+#             */
-/*   Updated: 2023/02/21 17:30:09 by lucocozz         ###   ########.fr       */
+/*   Updated: 2023/03/14 15:57:45 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,5 +173,15 @@ char	*ft_strcpy(char *dest, char *src)
 		i++;
 	}
 	dest[i] = '\0';
+	return (dest);
+}
+
+void	*ft_memcpy(void *dest, void const *src, size_t n)
+{
+	char		*d = dest;
+	const char	*s = src;
+
+	while (n--)
+		*d++ = *s++;
 	return (dest);
 }

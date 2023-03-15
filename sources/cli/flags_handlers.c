@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 20:26:22 by user42            #+#    #+#             */
-/*   Updated: 2023/03/03 20:44:58 by lucocozz         ###   ########.fr       */
+/*   Updated: 2023/03/14 19:47:03 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,8 @@ int	handle_flag_icmp(t_cli *cli, char *argument)
 {
 	(void)argument;
 	cli->socktype = SOCK_RAW;
-	cli->port = DFT_PORT;
+	cli->prototype = IPPROTO_ICMP;
+	cli->port = DFT_ICMP_PORT;
 	return (0);
 }
 
@@ -65,6 +66,7 @@ int	handle_flag_tcp(t_cli *cli, char *argument)
 {
 	(void)argument;
 	cli->socktype = SOCK_STREAM;
+	cli->prototype = IPPROTO_TCP;
 	cli->port = DFT_TCP_PORT;
 	return (0);
 }
@@ -73,6 +75,7 @@ int	handle_flag_udp(t_cli *cli, char *argument)
 {
 	(void)argument;
 	cli->socktype = SOCK_DGRAM;
+	cli->prototype = IPPROTO_UDP;
 	cli->port = DFT_UDP_PORT;
 	return (0);
 }

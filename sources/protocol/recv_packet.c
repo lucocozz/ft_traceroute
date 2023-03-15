@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   recv_datagram.c                                    :+:      :+:    :+:   */
+/*   recv_packet.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -39,13 +39,13 @@ static short	__get_error(int bytes)
 	return (NOERROR);
 }
 
-t_querie	recv_datagram(int socket, int family)
+t_querie	recv_packet(int socket, int family)
 {
 	struct iovec		iov;
 	struct msghdr		msg;
 	struct sockaddr_in	from_addr;
 	char				buffer[MSG_BUFFER_SIZE];
-	t_querie			data;
+	t_querie			data = {0};
 
 	iov.iov_base = buffer;
 	iov.iov_len = MSG_BUFFER_SIZE;

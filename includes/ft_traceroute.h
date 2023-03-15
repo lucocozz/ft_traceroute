@@ -13,6 +13,13 @@
 #ifndef FT_TRACEROUTE_H
 # define FT_TRACEROUTE_H
 
+/*
+https://www.gnu.org/software/libc/manual/html_node/Feature-Test-Macros.html
+https://man7.org/linux/man-pages/man7/feature_test_macros.7.html
+*/
+# define _GNU_SOURCE
+
+# include <netdb.h>
 # include <unistd.h>
 # include <stdlib.h>
 # include <stdio.h>
@@ -21,20 +28,15 @@
 # include <sys/time.h>
 # include <arpa/inet.h>
 # include <signal.h>
-# include <netdb.h>
 # include <stdint.h>
 # include <stdbool.h>
-# include <netinet/ip.h>
-# include <netinet/ip_icmp.h>
-# include <linux/tcp.h>
 # include <string.h>
 # include <errno.h>
 # include <ifaddrs.h>
 # include <linux/if_ether.h>
 # include <linux/filter.h>
+# include "raw_packet.h"
 # include "libft.h"
-
-# define IMPLEMENT_TRACEROUTE
 
 # define GET_LEVEL(family) (family == PF_INET ? IPPROTO_IP : IPPROTO_IPV6)
 # define GET_ADDRLEN(family) (family == PF_INET ? INET_ADDRSTRLEN : INET6_ADDRSTRLEN)
@@ -52,9 +54,11 @@
 # define DFT_QUERIES 3
 # define DFT_TCP_PORT 80
 # define DFT_UDP_PORT 53
-# define DFT_PORT 33434
+# define DFT_ICMP_PORT 33434
+# define DFT_PORT DFT_UDP_PORT
 # define DFT_HOST NULL
-# define DFT_SOCKTYPE SOCK_RAW
+# define DFT_SOCKTYPE SOCK_DGRAM
+# define DFT_PROTOTYPE IPPROTO_UDP
 # define DFT_PACKETLEN 40
 # define DFT_TIMEOUT 5
 
@@ -94,6 +98,7 @@ typedef struct s_cli
 	short			queries;
 	uint			port;
 	uint			socktype;
+	uint			prototype;
 	uint			packetlen;
 }	t_cli;
 
@@ -104,15 +109,6 @@ typedef struct s_options
 	char	*help;
 	int		(*handler)(t_cli *, char *);
 }	t_options;
-
-typedef struct s_icmp_datagram
-{
-	struct icmphdr	*header;
-	void			*raw;
-	char			*data;
-	size_t			size;
-	size_t			total;
-} t_datagram;
 
 typedef struct s_querie
 {
@@ -129,17 +125,16 @@ void	fatal(short status, const char *msg);
 void	cleanup(int socket, struct addrinfo *address);
 void	set_signals_handlers(void);
 
-/* icmp */
-int				create_socket(struct addrinfo *address);
-t_datagram	create_icmp_datagram(size_t data_size, uint8_t type, uint8_t code);
-void			delete_icmp_datagram(t_datagram *datagram);
-int				send_datagram(int socket, t_datagram datagram, struct addrinfo *address);
-t_querie		recv_datagram(int socket, int family);
+/* protocol */
+int			create_socket(struct addrinfo *address);
+int			send_packet(int socket, Packet *packet, struct addrinfo *address);
+t_querie	recv_packet(int socket, int family);
+void		set_packet_header(Packet *packet, t_cli cli);
+void		update_packet_header(Packet *packet, t_cli cli, int seq);
 
 /* ip */
 char			*get_ip_address(struct addrinfo *address);
 struct addrinfo	*resolve_service(t_cli cli);
-uint16_t		checksum(uint16_t *addr, size_t len);
 bool			is_ip_format(int family, char *ip);
 void			get_ptr_record(struct sockaddr *from_addr, char *buffer);
 int				set_ttl(int socket, int level, short ttl);
@@ -149,10 +144,10 @@ float	get_elapsed_time(struct timeval start, struct timeval end);
 
 /* traceroute */
 int			traceroute(t_cli cli, struct addrinfo *address, int socket);
-t_querie	traceroute_queries(int socket, t_datagram datagram, struct addrinfo *address);
+t_querie	traceroute_queries(int socket, Packet *packet, struct addrinfo *address);
 
 /* display */
-void	print_header(t_cli cli, char *ip, t_datagram datagram);
+void	print_header(t_cli cli, char *ip, Packet *packet);
 void	print_querie(t_querie querie);
 
 /* cli */

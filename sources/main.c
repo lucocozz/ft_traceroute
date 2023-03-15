@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 19:39:11 by user42            #+#    #+#             */
-/*   Updated: 2023/03/07 19:04:40 by lucocozz         ###   ########.fr       */
+/*   Updated: 2023/03/09 17:11:46 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int main(int argc, char **argv)
 	address = resolve_service(cli);
 	socket = create_socket(address);
 	if (socket == -1) {
-		cleanup(-1, address);
+		freeaddrinfo(address);
 		fatal(EXIT_FAILURE, strerror(errno));
 	}
 	set_signals_handlers();
