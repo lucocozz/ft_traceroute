@@ -39,37 +39,39 @@ https://man7.org/linux/man-pages/man7/feature_test_macros.7.html
 # include "libft.h"
 
 # define GET_LEVEL(family) (family == PF_INET ? IPPROTO_IP : IPPROTO_IPV6)
+# define GET_VPROTO(family) (family == PF_INET ? IPPROTO_ICMP : IPPROTO_ICMPV6)
 # define GET_ADDRLEN(family) (family == PF_INET ? INET_ADDRSTRLEN : INET6_ADDRSTRLEN)
 # define HTONS(n) (((((unsigned short)(n) & 0xFF)) << 8) | (((unsigned short)(n) & 0xFF00) >> 8))
 
-# define EXIT_ERROR 2
-# define MSG_BUFFER_SIZE 2048
-# define PTR_RECORD_SIZE 255
-# define MAX_ADDR_LEN 48
+# define EXIT_ERROR			2
+# define MSG_BUFFER_SIZE	2048
+# define PTR_RECORD_SIZE	255
+# define MAX_ADDR_LEN		48
 
-# define DFT_INTERVAL 0
-# define DFT_FIRST_TTL 1
-# define DFT_MAX_TTL 30
-# define DFT_FAMILY PF_INET
-# define DFT_QUERIES 3
-# define DFT_TCP_PORT 80
-# define DFT_UDP_PORT 53
-# define DFT_ICMP_PORT 33434
-# define DFT_PORT DFT_UDP_PORT
-# define DFT_HOST NULL
-# define DFT_SOCKTYPE SOCK_DGRAM
-# define DFT_PROTOCOL IPPROTO_UDP
-# define DFT_PACKETLEN 40
-# define DFT_TIMEOUT 5
+# define DFT_INTERVAL	0
+# define DFT_FIRST_TTL	1
+# define DFT_MAX_TTL	30
+# define DFT_FAMILY		PF_INET
+# define DFT_QUERIES	3
+# define DFT_TCP_PORT	80
+# define DFT_UDP_PORT	53
+# define DFT_ICMP_PORT	33434
+# define DFT_HOST		NULL
+# define DFT_PACKETLEN	40
+# define DFT_TIMEOUT	1
 
-# define NOERROR 0
-# define INTERRUPTED -2
-# define ERR_UNDEFINED -1
-# define ERR_TTL_EXCEEPTED 1
-# define ERR_TIMEOUT 2
-# define ERR_NET_UNREACHABLE 3
-# define ERR_WRONG_ID 4
-# define ERR_SEND 5
+# define DFT_PORT		DFT_ICMP_PORT
+# define DFT_SOCKTYPE	SOCK_RAW
+# define DFT_PROTOCOL	IPPROTO_ICMP
+
+# define NOERROR				0
+# define INTERRUPTED			-2
+# define ERR_UNDEFINED			-1
+# define ERR_TTL_EXCEEPTED		1
+# define ERR_TIMEOUT			2
+# define ERR_NET_UNREACHABLE	3
+# define ERR_WRONG_ID			4
+# define ERR_SEND				5
 
 # define TRACEROUTE_HELP											\
 "Usage\n"															\
@@ -110,6 +112,12 @@ typedef struct s_options
 	int		(*handler)(t_cli *, char *);
 }	t_options;
 
+typedef struct s_sockets
+{
+	int	recv;
+	int	send;
+}	t_sockets;
+
 typedef struct s_querie
 {
 	int		bytes;
@@ -122,11 +130,11 @@ typedef struct s_querie
 /* system */
 void	warn(const char *msg);
 void	fatal(short status, const char *msg);
-void	cleanup(int socket, struct addrinfo *address);
+void	cleanup(t_sockets sockets, struct addrinfo *address);
 void	set_signals_handlers(void);
 
 /* protocol */
-int			create_socket(struct addrinfo *address);
+int			create_socket(struct addrinfo *address, t_sockets *sockets);
 int			send_packet(int socket, Packet *packet, struct addrinfo *address);
 t_querie	recv_packet(int socket, int family);
 void		set_packet_header(Packet *packet, t_cli cli);
@@ -143,12 +151,12 @@ int				set_ttl(int socket, int level, short ttl);
 float	get_elapsed_time(struct timeval start, struct timeval end);
 
 /* traceroute */
-int			traceroute(t_cli cli, struct addrinfo *address, int socket);
-t_querie	traceroute_queries(int socket, Packet *packet, struct addrinfo *address);
+int			traceroute(t_cli cli, struct addrinfo *address, t_sockets sockets);
+t_querie	traceroute_queries(t_sockets sockets, Packet *packet, struct addrinfo *address);
 
 /* display */
 void	print_header(t_cli cli, char *ip, Packet *packet);
-void	print_querie(t_querie querie);
+void	print_querie(t_querie querie, t_cli cli);
 
 /* cli */
 t_cli	get_cli(int argc, char **argv);

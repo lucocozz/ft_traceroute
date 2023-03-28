@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 20:26:22 by user42            #+#    #+#             */
-/*   Updated: 2023/03/15 15:54:24 by lucocozz         ###   ########.fr       */
+/*   Updated: 2023/03/16 18:45:18 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	handle_flag_icmp(t_cli *cli, char *argument)
 int	handle_flag_tcp(t_cli *cli, char *argument)
 {
 	(void)argument;
-	cli->socktype = SOCK_STREAM;
+	cli->socktype = SOCK_RAW;
 	cli->protocol = IPPROTO_TCP;
 	cli->port = DFT_TCP_PORT;
 	return (0);

@@ -6,7 +6,7 @@
 #    By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/30 15:23:20 by lucocozz          #+#    #+#              #
-#    Updated: 2023/03/15 15:33:57 by lucocozz         ###   ########.fr        #
+#    Updated: 2023/03/28 13:54:47 by lucocozz         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -79,7 +79,7 @@ INCLUDES_DIR = includes includes/raw_packet $(LIBS:%=lib%/includes) $(LIBS:%=lib
 LIBS =
 
 MAKE = make
-CC = clang
+CC = gcc
 RM = rm -f
 MKDIR = mkdir -p
 DEBUG = off

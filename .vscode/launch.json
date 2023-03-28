@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/ft_traceroute",
-            "args": ["8.8.8.8"],
+            "args": ["8.8.8.8", "-U"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

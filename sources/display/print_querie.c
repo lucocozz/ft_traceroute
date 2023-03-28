@@ -12,16 +12,18 @@
 
 #include "ft_traceroute.h"
 
-void	print_querie(t_querie querie)
+void	print_querie(t_querie querie, t_cli cli)
 {
-	static char	last_addr[MAX_ADDR_LEN] = {0};
+	static ushort	probe = 1;
+	static char		last_addr[MAX_ADDR_LEN] = {0};
 
 	if (querie.error == ERR_TIMEOUT)
 		printf(" *");
-	else if (ft_strcmp(last_addr, querie.address) == 0)
+	else if (ft_strcmp(last_addr, querie.address) == 0 && probe > 1)
 		printf(" %.3fms", querie.time);
 	else {
 		printf(" %s (%s) %.3fms", querie.ptr_record, querie.address, querie.time);
 		ft_strcpy(last_addr, querie.address);
 	}
+	probe = (probe == cli.queries ? 1 : probe + 1);
 }

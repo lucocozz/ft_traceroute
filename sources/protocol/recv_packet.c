@@ -55,6 +55,8 @@ t_querie	recv_packet(int socket, int family)
 	if (data.error == NOERROR) {
 		inet_ntop(family, &from_addr.sin_addr, data.address, GET_ADDRLEN(family));
 		get_ptr_record((struct sockaddr *)&from_addr, data.ptr_record);
+		if (*data.ptr_record == '\0')
+			ft_strcpy(data.ptr_record, data.address);
 	}
 	return (data);
 }
