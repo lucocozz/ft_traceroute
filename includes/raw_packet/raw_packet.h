@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 15:06:00 by lucocozz          #+#    #+#             */
-/*   Updated: 2023/03/15 15:00:16 by lucocozz         ###   ########.fr       */
+/*   Updated: 2023/04/01 19:10:53 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,16 @@ typedef struct Packet {
 } Packet;
 
 typedef struct PacketInterface {
-	void	(*destroy)(Packet*);
-	void	(*checksum)(Packet*);
+	void		(*destroy)(Packet*);
+	void		(*checksum)(Packet*);
+	uint16_t	(*get_port)(Packet*);
 } PacketInterface;
 
 Packet		*packet_create(int type, size_t size);
 void		packet_destroy(Packet *packet);
 void		packet_checksum(Packet *packet);
 uint16_t	checksum(uint16_t *addr, size_t len);
+uint16_t	get_port(Packet *packet);
 
 # include "icmp_packet.h"
 # include "udp_packet.h"

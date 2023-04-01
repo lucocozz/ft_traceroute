@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   create_socket.c                                    :+:      :+:    :+:   */
+/*   create_sockets.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -46,7 +46,7 @@ static int	__set_options(int socket)
 	return (0);
 }
 
-int	create_socket(struct addrinfo *address, t_sockets *sockets)
+int	create_sockets(struct addrinfo *address, t_sockets *sockets)
 {
 	sockets->send = socket(address->ai_family, address->ai_socktype, address->ai_protocol);
 	if (sockets->send == -1)

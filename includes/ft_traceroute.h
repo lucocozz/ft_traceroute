@@ -54,8 +54,9 @@ https://man7.org/linux/man-pages/man7/feature_test_macros.7.html
 # define DFT_FAMILY		PF_INET
 # define DFT_QUERIES	3
 # define DFT_TCP_PORT	80
-# define DFT_UDP_PORT	53
-# define DFT_ICMP_PORT	33434
+# define DFT_DCCP_PORT	53
+# define DFT_UDP_PORT	33434
+# define DFT_ICMP_PORT	0
 # define DFT_HOST		NULL
 # define DFT_PACKETLEN	40
 # define DFT_TIMEOUT	1
@@ -134,7 +135,7 @@ void	cleanup(t_sockets sockets, struct addrinfo *address);
 void	set_signals_handlers(void);
 
 /* protocol */
-int			create_socket(struct addrinfo *address, t_sockets *sockets);
+int			create_sockets(struct addrinfo *address, t_sockets *sockets);
 int			send_packet(int socket, Packet *packet, struct addrinfo *address);
 t_querie	recv_packet(int socket, int family);
 void		set_packet_header(Packet *packet, t_cli cli);

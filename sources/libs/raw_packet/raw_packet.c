@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 15:13:00 by lucocozz          #+#    #+#             */
-/*   Updated: 2023/03/15 00:27:17 by lucocozz         ###   ########.fr       */
+/*   Updated: 2023/04/01 19:11:36 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,4 +35,9 @@ Packet	*packet_create(int type, size_t size)
 void	packet_checksum(Packet *packet)
 {
 	packet->vtable->checksum(packet);
+}
+
+uint16_t	get_port(Packet *packet)
+{
+	return (packet->vtable->get_port(packet));
 }

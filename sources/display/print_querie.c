@@ -19,6 +19,8 @@ void	print_querie(t_querie querie, t_cli cli)
 
 	if (querie.error == ERR_TIMEOUT)
 		printf(" *");
+	else if (querie.error == ERR_SEND)
+		printf(" %s", strerror(errno));
 	else if (ft_strcmp(last_addr, querie.address) == 0 && probe > 1)
 		printf(" %.3fms", querie.time);
 	else {

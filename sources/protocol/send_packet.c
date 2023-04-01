@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/25 00:09:19 by lucocozz          #+#    #+#             */
-/*   Updated: 2023/03/15 15:25:03 by lucocozz         ###   ########.fr       */
+/*   Updated: 2023/04/01 19:11:18 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ int	send_packet(int socket, Packet *packet, struct addrinfo *address)
 
 	dest.sin_family = address->ai_family;
 	dest.sin_addr = sockaddr->sin_addr;
-	bytes_sent = sendto(socket, packet->raw, packet->size.total, 0, (struct sockaddr *)&dest, sizeof(dest));
+	dest.sin_port = get_port(packet);
+	bytes_sent = sendto(socket, packet->raw, packet->size.total, MSG_NOSIGNAL, (struct sockaddr *)&dest, sizeof(dest));
 	return (bytes_sent);
 }

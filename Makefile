@@ -6,7 +6,7 @@
 #    By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/30 15:23:20 by lucocozz          #+#    #+#              #
-#    Updated: 2023/03/28 13:54:47 by lucocozz         ###   ########.fr        #
+#    Updated: 2023/04/01 14:02:49 by lucocozz         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,7 +31,7 @@ _DISPLAY = 					\
 	print_querie.c			\
 
 _PROTOCOL =					\
-	create_socket.c			\
+	create_sockets.c			\
 	send_packet.c			\
 	recv_packet.c			\
 	set_packet_header.c		\

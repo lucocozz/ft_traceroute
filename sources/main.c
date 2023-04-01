@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 19:39:11 by user42            #+#    #+#             */
-/*   Updated: 2023/03/28 18:20:02 by lucocozz         ###   ########.fr       */
+/*   Updated: 2023/04/01 15:37:21 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int main(int argc, char **argv)
 
 	cli = get_cli(argc, argv);
 	address = resolve_service(cli);
-	if (create_socket(address, &sockets) == -1) {
+	if (create_sockets(address, &sockets) == -1) {
 		freeaddrinfo(address);
 		fatal(EXIT_FAILURE, strerror(errno));
 	}

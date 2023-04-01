@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 15:43:50 by lucocozz          #+#    #+#             */
-/*   Updated: 2023/03/15 15:32:27 by lucocozz         ###   ########.fr       */
+/*   Updated: 2023/04/01 19:18:00 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,13 @@ static void	__bzero(void *s, size_t n);
 
 
 /*  public  */
+
+uint16_t	icmp_get_port(Packet *packet)
+{
+	(void)packet;
+
+	return (HTONS(0));
+}
 
 void	icmp_packet_checksum(Packet *packet)
 {
@@ -40,6 +47,7 @@ Packet	*icmp_packet_create(size_t size)
 	static const PacketInterface	vtable = {
 		.destroy = icmp_packet_destroy,
 		.checksum = icmp_packet_checksum,
+		.get_port = icmp_get_port
 	};
 	static Packet	base = {
 		.vtable = &vtable,

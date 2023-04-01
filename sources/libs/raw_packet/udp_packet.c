@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 15:43:50 by lucocozz          #+#    #+#             */
-/*   Updated: 2023/03/15 15:56:55 by lucocozz         ###   ########.fr       */
+/*   Updated: 2023/04/01 19:11:47 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,12 @@ static void	__bzero(void *s, size_t n);
 
 
 /*  public  */
+uint16_t	udp_get_port(Packet *packet)
+{
+	UdpPacket	*udp = (UdpPacket*)packet;
 
-
+	return (udp->header->uh_dport);
+}
 
 void	udp_packet_checksum(Packet *packet)
 {
@@ -42,7 +46,8 @@ Packet	*udp_packet_create(size_t size)
 {
 	static const PacketInterface	vtable = {
 		.destroy = udp_packet_destroy,
-		.checksum = udp_packet_checksum
+		.checksum = udp_packet_checksum,
+		.get_port = udp_get_port
 	};
 	static Packet	base = {
 		.vtable = &vtable,

@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 15:43:50 by lucocozz          #+#    #+#             */
-/*   Updated: 2023/03/15 15:57:08 by lucocozz         ###   ########.fr       */
+/*   Updated: 2023/04/01 19:17:47 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,13 @@ static void	__bzero(void *s, size_t n);
 
 
 /*  public  */
+
+uint16_t	tcp_get_port(Packet *packet)
+{
+	TcpPacket	*tcp = (TcpPacket*)packet;
+
+	return (tcp->header->th_dport);
+}
 
 void	tcp_packet_checksum(Packet *packet)
 {
