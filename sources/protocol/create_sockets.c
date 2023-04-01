@@ -40,7 +40,7 @@
 
 static int	__set_options(int socket)
 {
-	struct timeval	timeout = {.tv_sec = DFT_TIMEOUT, .tv_usec = 0};
+	struct timeval	timeout = {.tv_sec = 0, .tv_usec = DFT_TIMEOUT_US};
 	if (setsockopt(socket, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) < 0)
 		return (-1);
 	return (0);

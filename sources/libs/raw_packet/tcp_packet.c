@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 15:43:50 by lucocozz          #+#    #+#             */
-/*   Updated: 2023/04/01 19:17:47 by lucocozz         ###   ########.fr       */
+/*   Updated: 2023/04/01 19:20:19 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,8 @@ Packet	*tcp_packet_create(size_t size)
 {
 	static const PacketInterface	vtable = {
 		.destroy = tcp_packet_destroy,
-		.checksum = tcp_packet_checksum
+		.checksum = tcp_packet_checksum,
+		.get_port = tcp_get_port
 	};
 	static Packet	base = {
 		.vtable= &vtable,

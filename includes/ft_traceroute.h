@@ -59,7 +59,7 @@ https://man7.org/linux/man-pages/man7/feature_test_macros.7.html
 # define DFT_ICMP_PORT	0
 # define DFT_HOST		NULL
 # define DFT_PACKETLEN	40
-# define DFT_TIMEOUT	1
+# define DFT_TIMEOUT_US	50000
 
 # define DFT_PORT		DFT_ICMP_PORT
 # define DFT_SOCKTYPE	SOCK_RAW
