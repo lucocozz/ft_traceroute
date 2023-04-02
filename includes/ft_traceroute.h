@@ -125,7 +125,7 @@ typedef struct s_querie
 	char	ptr_record[PTR_RECORD_SIZE];
 	char	address[MAX_ADDR_LEN];
 	float	time;
-	short	error;
+	short	status;
 }	t_querie;
 
 /* system */

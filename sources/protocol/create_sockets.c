@@ -12,32 +12,6 @@
 
 #include "ft_traceroute.h"
 
-// static void __set_filter(int sock)
-// {
-// 	static int					once;
-// 	static struct sock_filter	insns[] = {
-// 		BPF_STMT(BPF_LDX | BPF_B   | BPF_MSH, 0),	/* Skip IP header due BSD, see ping6. */
-// 		BPF_STMT(BPF_LD  | BPF_H   | BPF_IND, 4),	/* Load icmp echo ident */
-// 		BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, 0xAAAA, 0, 1), /* Ours? */
-// 		BPF_STMT(BPF_RET | BPF_K, ~0U),			/* Yes, it passes. */
-// 		BPF_STMT(BPF_LD  | BPF_B   | BPF_IND, 0),	/* Load icmp type */
-// 		BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, ICMP_ECHOREPLY, 1, 0), /* Echo? */
-// 		BPF_STMT(BPF_RET | BPF_K, 0xFFFFFFF),		/* No. It passes. */
-// 		BPF_STMT(BPF_RET | BPF_K, 0)			/* Echo with wrong ident. Reject. */
-// 	};
-// 	static struct sock_fprog filter = {
-// 		.len = sizeof(insns) / sizeof(insns[0]),
-// 		.filter = insns
-// 	};
-// 	if (once)
-// 		return;
-// 	once = 1;
-// 	/* Patch bpflet for current identifier. */
-// 	insns[2] = (struct sock_filter)BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, HTONS(getpid()), 0, 1);
-// 	if (setsockopt(sock, SOL_SOCKET, SO_ATTACH_FILTER, &filter, sizeof(filter)))
-// 		warn("failed to install socket filter");
-// }
-
 static int	__set_options(int socket)
 {
 	struct timeval	timeout = {.tv_sec = 0, .tv_usec = DFT_TIMEOUT_US};
@@ -56,7 +30,6 @@ int	create_sockets(struct addrinfo *address, t_sockets *sockets)
 		close(sockets->send);
 		return (-1);
 	}
-	// __set_filter(sockets->recv);
 	if (__set_options(sockets->recv) == -1)
 		return (-1);
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/06 21:03:23 by lucocozz          #+#    #+#             */
-/*   Updated: 2023/04/01 15:36:33 by lucocozz         ###   ########.fr       */
+/*   Updated: 2023/04/02 16:40:04 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	traceroute(t_cli cli, struct addrinfo *address, t_sockets sockets)
 		for (short i = 0; i < cli.queries; ++i)
 		{
 			querie = traceroute_queries(sockets, packet, address);
-			if (querie.error == ERR_UNDEFINED)
+			if (querie.status == ERR_UNDEFINED)
 				break ;
 			print_querie(querie, cli);
 		}
@@ -44,5 +44,5 @@ int	traceroute(t_cli cli, struct addrinfo *address, t_sockets sockets)
 
 	free(ip);
 	packet_destroy(packet);
-	return (querie.error);
+	return (querie.status);
 }

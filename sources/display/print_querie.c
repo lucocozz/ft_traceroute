@@ -17,9 +17,9 @@ void	print_querie(t_querie querie, t_cli cli)
 	static ushort	probe = 1;
 	static char		last_addr[MAX_ADDR_LEN] = {0};
 
-	if (querie.error == ERR_TIMEOUT)
+	if (querie.status == ERR_TIMEOUT)
 		printf(" *");
-	else if (querie.error == ERR_SEND)
+	else if (querie.status == ERR_SEND)
 		printf(" %s", strerror(errno));
 	else if (ft_strcmp(last_addr, querie.address) == 0 && probe > 1)
 		printf(" %.3fms", querie.time);

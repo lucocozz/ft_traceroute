@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 15:32:48 by lucocozz          #+#    #+#             */
-/*   Updated: 2023/04/01 16:22:43 by lucocozz         ###   ########.fr       */
+/*   Updated: 2023/04/02 16:33:44 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	update_packet_header(Packet *packet, t_cli cli, int socket, int seq)
 		((UdpPacket*)packet)->set_uh_dport(packet, cli.port + seq - 1);
 		break;
 	case IPPROTO_TCP:
-		((TcpPacket*)packet)->set_seq(packet, seq);
+		// ((TcpPacket*)packet)->set_seq(packet, seq);
 	default:
 		break;
 	}
