@@ -86,6 +86,7 @@ https://man7.org/linux/man-pages/man7/feature_test_macros.7.html
 "  -m max_ttl  --max-hops=max_ttl\n\t\t\t\tSet the max number of hops (max TTL to be\n\t\t\t\treached). Default is 30\n" \
 "  -p port  --port=port\t\tSet the destination port to use. It is either\n\t\t\t\tinitial udp port value for \"default\" method\n\t\t\t\t(incremented by each probe, default is 33434), or\n\t\t\t\tinitial seq for \"icmp\" (incremented as well,\n\t\t\t\tdefault from 1), or some constant destination\n\t\t\t\tport for other methods (with default of 80 for\n\t\t\t\t\"tcp\", 53 for \"udp\", etc.)\n" \
 "  -q queries  --queries=nqueries\n\t\t\t\tSet the number of probes per each hop. Default is\n\t\t\t\t3\n" \
+"  -U  --udp\t\t\tUse UDP to particular port for tracerouting\n\t\t\t\t(instead of increase the port for each probe),\n\t\t\t\tdefault port is 53\n" \
 "  --help\t\t\tRead this help and exit\n" \
 "\nArguments:\n"													\
 "+    host\t\tThe Host to traceroute to\n"							\

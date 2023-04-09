@@ -39,7 +39,7 @@ bool	__exec_handler(const t_options *options, t_cli *cli, char *flag, char *argu
 		}
 	}
 	if (options[i].flag == NULL)
-		bad_option(options[i].flag, argc);
+		bad_option(flag, argc);
 	return (options[i].has_argument);
 }
 
@@ -121,8 +121,10 @@ int	__handle_flag(t_cli *cli, char **argv, int argc, int i)
 
 	while (*flag != '\0')
 	{
-		if (*flag == '-')
-			i += __double_dash_flag(cli, flag, i);
+		if (*flag == '-') {
+			i += __double_dash_flag(cli, (flag + 1), i);
+			break ;
+		}
 		if (*(flag + 1) != '\0') {
 			__dash_flag(cli, flag, (flag + 1), i);
 			break ;
