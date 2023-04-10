@@ -65,7 +65,7 @@ static int	__dash_flag(t_cli *cli, char *flag, char *argument, int argc)
 {
 	static const t_options	options[] = {
 		{.flag = "4", .handler = &handle_flag_4, .has_argument = false},
-		{.flag = "6", .handler = &handle_flag_6, .has_argument = false},
+		// {.flag = "6", .handler = &handle_flag_6, .has_argument = false},
 		{.flag = "I", .handler = &handle_flag_icmp, .has_argument = false},
 		{.flag = "T", .handler = &handle_flag_tcp, .has_argument = false},
 		{.flag = "U", .handler = &handle_flag_udp, .has_argument = false},

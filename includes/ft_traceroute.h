@@ -79,7 +79,7 @@ https://man7.org/linux/man-pages/man7/feature_test_macros.7.html
 "  ft_traceroute [-46ITn] [ -f first_ttl ] [ -m max_ttl ] [ -N squeries ] [ -p port ] host [ packetlen ]\n\n"	\
 "Options:\n"														\
 "  -4\t\t\t\tUse IPv4\n"													\
-"  -6\t\t\t\tUse IPv6\n"													\
+/* "  -6\t\t\t\tUse IPv6\n"												*/	\
 "  -f first_ttl  --first=first_ttl\n\t\t\t\tStart from the first_ttl hop (instead from 1)\n"			\
 "  -I  --icmp\t\t\tUse ICMP ECHO for tracerouting\n"						\
 "  -T  --tcp\t\t\tUse TCP SYN for tracerouting (default port is 80)\n"	\

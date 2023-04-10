@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 20:26:22 by user42            #+#    #+#             */
-/*   Updated: 2023/04/01 19:13:53 by lucocozz         ###   ########.fr       */
+/*   Updated: 2023/04/10 15:26:06 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ int	handle_packetlen(t_cli *cli, char *argument)
 	value = atoi(argument);
 	if (value < 0)
 		return (-2);
-	if (value > 10)
-		fatal(EXIT_ERROR, "no more than 10 probes per hop");
+	if (value > 65000)
+		fatal(EXIT_ERROR, "too big packetlen specified");
 	cli->packetlen = value;
 	return (0);
 }
