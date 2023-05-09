@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 20:26:22 by user42            #+#    #+#             */
-/*   Updated: 2023/04/10 15:26:06 by lucocozz         ###   ########.fr       */
+/*   Updated: 2023/05/09 19:35:04 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ int	handle_flag_udp(t_cli *cli, char *argument)
 
 int	handle_flag_first(t_cli *cli, char *argument)
 {
-	uint	value;
+	int	value;
 
 	if (ft_is_integer(argument) == false)
 		return (-1);
@@ -95,14 +95,14 @@ int	handle_flag_first(t_cli *cli, char *argument)
 
 int	handle_flag_max(t_cli *cli, char *argument)
 {
-	uint	value;
+	int	value;
 
 	if (ft_is_integer(argument) == false)
 		return (-1);
 	value = atoi(argument);
-	if (value <= 0)
+	if (value <= 0 || value < cli->first_ttl)
 		fatal(EXIT_ERROR, "first hop out of range");
-	if (value <= __UINT8_MAX__ )
+	if (value > 255)
 		fatal(EXIT_ERROR, "max hops cannot be more than 255");
 	cli->max_ttl = value;
 	return (0);
