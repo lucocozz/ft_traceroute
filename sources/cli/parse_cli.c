@@ -12,7 +12,7 @@
 
 #include "ft_traceroute.h"
 
-char	*__get_argument(char *flag)
+static char	*__get_argument(char *flag)
 {
 	uint	i = 0;
 
@@ -23,7 +23,7 @@ char	*__get_argument(char *flag)
 	return (&flag[i + 1]);
 }
 
-bool	__exec_handler(const t_options *options, t_cli *cli, char *flag, char *argument, int argc)
+static bool	__exec_handler(const t_options *options, t_cli *cli, char *flag, char *argument, int argc)
 {
 	uint	i = 0;
 
